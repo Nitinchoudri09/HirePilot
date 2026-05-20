@@ -199,35 +199,35 @@
     <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon icon-blue"><i class='bx bx-book-open'></i></div>
+        <div class="stat-icon icon-blue"><i class='bx bx-code-alt'></i></div>
         <div class="stat-info">
-          <h3>12</h3>
-          <p>Courses Enrolled</p>
-          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> 2 this week</div>
+          <h3>{{ problems_solved|default:"0" }}</h3>
+          <p>Problems Solved</p>
+          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> {{ problems_solved_this_week|default:"0" }} this week</div>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon icon-green"><i class='bx bx-briefcase-alt-2'></i></div>
+        <div class="stat-icon icon-green"><i class='bx bx-edit'></i></div>
         <div class="stat-info">
-          <h3>5</h3>
-          <p>Jobs Applied</p>
-          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> 1 this week</div>
+          <h3>{{ total_submissions|default:"0" }}</h3>
+          <p>Code Submissions</p>
+          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> Keep coding!</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon icon-purple"><i class='bx bx-trophy'></i></div>
         <div class="stat-info">
-          <h3>82%</h3>
-          <p>Quiz Score</p>
-          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> 8% improvement</div>
+          <h3>{{ avg_quiz_score|default:"0" }}%</h3>
+          <p>Avg Quiz Score</p>
+          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> {{ quizzes_taken|default:"0" }} quizzes taken</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon icon-orange"><i class='bx bx-star'></i></div>
         <div class="stat-info">
-          <h3>18</h3>
-          <p>Skills Learned</p>
-          <div class="stat-trend"><i class='bx bx-up-arrow-alt'></i> 3 this week</div>
+          <h3>{{ total_posts|default:"0" }}</h3>
+          <p>Community Posts</p>
+          <div class="stat-trend"><i class='bx bx-heart'></i> {{ total_likes_received|default:"0" }} likes received</div>
         </div>
       </div>
     </div>
@@ -296,117 +296,94 @@
 
     <!-- Bottom Section -->
     <div class="bottom-grid">
-      <!-- To-Do Panel -->
+      <!-- Your Stats Summary Panel -->
       <div class="panel">
         <div class="panel-header">
-          <i class='bx bx-calendar-check'></i> My Courses / To-Do
+          <i class='bx bx-bar-chart-alt-2'></i> Your Progress Summary
         </div>
-        
-        <div class="todo-input-bar">
-          <input type="text" placeholder="Add a new task...">
-          <button>Add</button>
-        </div>
-        
+
         <ul class="todo-list">
           <li class="todo-item">
             <div class="todo-left">
               <i class='bx bxs-check-circle'></i>
-              <span class="todo-text">Complete Python Basics Course</span>
-              <span class="todo-badge badge-course">Course</span>
+              <span class="todo-text">Problems Solved</span>
+              <span class="todo-badge badge-course">Code Pro</span>
             </div>
             <div class="todo-right">
-              <span style="display:flex; align-items:center; gap:6px;"><i class='bx bx-calendar'></i> May 12, 2026</span>
-              <i class='bx bx-dots-vertical-rounded' style="cursor:pointer;"></i>
+              <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:#2563eb;">{{ problems_solved|default:"0" }}</span>
             </div>
           </li>
           <li class="todo-item">
             <div class="todo-left">
-              <i class='bx bx-circle'></i>
-              <span class="todo-text">Solve 20 Aptitude Questions</span>
+              <i class='bx bxs-check-circle'></i>
+              <span class="todo-text">Total Submissions</span>
+              <span class="todo-badge badge-task">Coding</span>
+            </div>
+            <div class="todo-right">
+              <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:#16a34a;">{{ total_submissions|default:"0" }}</span>
+            </div>
+          </li>
+          <li class="todo-item">
+            <div class="todo-left">
+              <i class='bx bxs-check-circle'></i>
+              <span class="todo-text">Quizzes Completed</span>
               <span class="todo-badge badge-quiz">Quiz</span>
             </div>
             <div class="todo-right">
-              <span style="display:flex; align-items:center; gap:6px;"><i class='bx bx-calendar'></i> May 15, 2026</span>
-              <i class='bx bx-dots-vertical-rounded' style="cursor:pointer;"></i>
+              <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:#9333ea;">{{ quizzes_taken|default:"0" }}</span>
             </div>
           </li>
           <li class="todo-item">
             <div class="todo-left">
-              <i class='bx bx-circle'></i>
-              <span class="todo-text">Update Your Resume</span>
-              <span class="todo-badge badge-task">Task</span>
+              <i class='bx bxs-check-circle'></i>
+              <span class="todo-text">Avg Quiz Score</span>
+              <span class="todo-badge badge-project">Score</span>
             </div>
             <div class="todo-right">
-              <span style="display:flex; align-items:center; gap:6px;"><i class='bx bx-calendar'></i> May 18, 2026</span>
-              <i class='bx bx-dots-vertical-rounded' style="cursor:pointer;"></i>
+              <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:#ea580c;">{{ avg_quiz_score|default:"0" }}%</span>
             </div>
           </li>
           <li class="todo-item">
             <div class="todo-left">
-              <i class='bx bx-circle'></i>
-              <span class="todo-text">Build a Django Project</span>
-              <span class="todo-badge badge-project">Project</span>
+              <i class='bx bxs-check-circle'></i>
+              <span class="todo-text">Community Posts</span>
+              <span class="todo-badge badge-task">Connect</span>
             </div>
             <div class="todo-right">
-              <span style="display:flex; align-items:center; gap:6px;"><i class='bx bx-calendar'></i> May 25, 2026</span>
-              <i class='bx bx-dots-vertical-rounded' style="cursor:pointer;"></i>
+              <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:#16a34a;">{{ total_posts|default:"0" }}</span>
             </div>
           </li>
         </ul>
-
-        <a href="#" class="view-all">View all tasks <i class='bx bx-right-arrow-alt'></i></a>
       </div>
 
-      <!-- Activity Panel -->
+      <!-- Activity Panel (REAL DATA) -->
       <div class="panel">
         <div class="panel-header">
           <i class='bx bx-pulse'></i> Recent Activity
         </div>
 
         <ul class="activity-list">
+          {% for activity in recent_activity %}
           <li class="activity-item">
-            <div class="activity-icon icon-green"><i class='bx bx-check'></i></div>
+            <div class="activity-icon {{ activity.icon_class }}"><i class='bx {{ activity.icon }}'></i></div>
             <div class="activity-content">
               <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="activity-title">Quiz Completed</div>
-                <div class="activity-time">2h ago</div>
+                <div class="activity-title">{{ activity.title }}</div>
+                <div class="activity-time">{{ activity.time_ago }}</div>
               </div>
-              <div class="activity-desc">JavaScript Basics Quiz</div>
+              <div class="activity-desc">{{ activity.desc }}</div>
             </div>
           </li>
+          {% empty %}
           <li class="activity-item">
-            <div class="activity-icon icon-blue"><i class='bx bx-book-open'></i></div>
+            <div class="activity-icon icon-blue"><i class='bx bx-info-circle'></i></div>
             <div class="activity-content">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="activity-title">Course Progress</div>
-                <div class="activity-time">1d ago</div>
-              </div>
-              <div class="activity-desc">Python Basics - 60% Completed</div>
+              <div class="activity-title">No activity yet</div>
+              <div class="activity-desc">Start solving problems, taking quizzes, or creating posts to see your activity here!</div>
             </div>
           </li>
-          <li class="activity-item">
-            <div class="activity-icon icon-orange"><i class='bx bx-briefcase-alt-2'></i></div>
-            <div class="activity-content">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="activity-title">Job Applied</div>
-                <div class="activity-time">2d ago</div>
-              </div>
-              <div class="activity-desc">Backend Developer at TCS</div>
-            </div>
-          </li>
-          <li class="activity-item">
-            <div class="activity-icon icon-purple"><i class='bx bx-star'></i></div>
-            <div class="activity-content">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="activity-title">New Skill Added</div>
-                <div class="activity-time">3d ago</div>
-              </div>
-              <div class="activity-desc">Django</div>
-            </div>
-          </li>
+          {% endfor %}
         </ul>
-
-        <a href="#" class="view-all">View all activity <i class='bx bx-right-arrow-alt'></i></a>
       </div>
     </div>
     {% endblock %}

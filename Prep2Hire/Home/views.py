@@ -117,4 +117,115 @@ def like_post(request, post_id):
 
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    from judge.models import Submission, Problem
+    from skill_development.models import QuizResult, Quiz
+    from django.utils import timezone
+    from datetime import timedelta
+
+    user = request.user
+    now = timezone.now()
+    one_week_ago = now - timedelta(days=7)
+
+    # --- Coding Stats ---
+    all_submissions = Submission.objects.filter(user=user)
+    total_submissions = all_submissions.count()
+    problems_solved = all_submissions.filter(status='AC').values('problem').distinct().count()
+    problems_solved_this_week = all_submissions.filter(
+        status='AC', created_at__gte=one_week_ago
+    ).values('problem').distinct().count()
+
+    # --- Quiz Stats ---
+    all_quiz_results = QuizResult.objects.filter(user=user)
+    quizzes_taken = all_quiz_results.values('quiz').distinct().count()
+    quizzes_this_week = all_quiz_results.filter(
+        taken_at__gte=one_week_ago
+    ).values('quiz').distinct().count()
+
+    # Average quiz score as percentage
+    avg_quiz_score = 0
+    if all_quiz_results.exists():
+        total_score = sum(r.score for r in all_quiz_results)
+        total_possible = sum(r.total for r in all_quiz_results)
+        if total_possible > 0:
+            avg_quiz_score = round((total_score / total_possible) * 100)
+
+    # --- Posts Stats ---
+    user_posts = Post.objects.filter(user=user)
+    total_posts = user_posts.count()
+    posts_this_week = user_posts.filter(created_at__gte=one_week_ago).count()
+
+    # --- Total Likes Received ---
+    total_likes_received = Like.objects.filter(post__user=user).count()
+
+    # --- Recent Activity (last 10 events combined) ---
+    recent_activity = []
+
+    # Recent quiz results
+    for qr in all_quiz_results.select_related('quiz').order_by('-taken_at')[:5]:
+        pct = round((qr.score / qr.total) * 100) if qr.total > 0 else 0
+        recent_activity.append({
+            'icon': 'bx-trophy',
+            'icon_class': 'icon-purple',
+            'title': 'Quiz Completed',
+            'desc': f'{qr.quiz.title} — {qr.score}/{qr.total} ({pct}%)',
+            'time': qr.taken_at,
+        })
+
+    # Recent submissions
+    for sub in all_submissions.select_related('problem').order_by('-created_at')[:5]:
+        status_map = {
+            'AC': 'Accepted ✅', 'WA': 'Wrong Answer ❌',
+            'TLE': 'Time Limit ⏰', 'RE': 'Runtime Error 💥',
+        }
+        verdict = status_map.get(sub.status, sub.status)
+        recent_activity.append({
+            'icon': 'bx-code-alt',
+            'icon_class': 'icon-blue',
+            'title': f'Code Submission — {verdict}',
+            'desc': sub.problem.title,
+            'time': sub.created_at,
+        })
+
+    # Recent posts
+    for post in user_posts.order_by('-created_at')[:5]:
+        recent_activity.append({
+            'icon': 'bx-message-square-dots',
+            'icon_class': 'icon-green',
+            'title': 'New Post Created',
+            'desc': post.content[:80] + ('...' if len(post.content) > 80 else ''),
+            'time': post.created_at,
+        })
+
+    # Sort all activity by time descending, take top 8
+    recent_activity.sort(key=lambda x: x['time'], reverse=True)
+    recent_activity = recent_activity[:8]
+
+    # Calculate human-readable time-ago for each activity
+    for activity in recent_activity:
+        diff = now - activity['time']
+        seconds = diff.total_seconds()
+        if seconds < 60:
+            activity['time_ago'] = 'Just now'
+        elif seconds < 3600:
+            mins = int(seconds // 60)
+            activity['time_ago'] = f'{mins}m ago'
+        elif seconds < 86400:
+            hours = int(seconds // 3600)
+            activity['time_ago'] = f'{hours}h ago'
+        else:
+            days = int(seconds // 86400)
+            activity['time_ago'] = f'{days}d ago'
+
+    context = {
+        'problems_solved': problems_solved,
+        'problems_solved_this_week': problems_solved_this_week,
+        'total_submissions': total_submissions,
+        'quizzes_taken': quizzes_taken,
+        'quizzes_this_week': quizzes_this_week,
+        'avg_quiz_score': avg_quiz_score,
+        'total_posts': total_posts,
+        'posts_this_week': posts_this_week,
+        'total_likes_received': total_likes_received,
+        'recent_activity': recent_activity,
+    }
+    return render(request, 'dashboard.html', context)
