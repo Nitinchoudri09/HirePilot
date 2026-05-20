@@ -1,118 +1,105 @@
+{% extends 'dashboard.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>Problems</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f0f4fb;
-            margin: 0;
-            padding: 40px 20px;
-            color: #121212;
-            min-height: 100vh;
-        }
 
-        .container {
+{% block content %}
+    <style>
+        .problems-container {
             background: #fff;
             max-width: 1200px;
             width: 100%;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
-            padding: 15px 40px;
-            margin:25px auto;
+            padding: 15px 40px 40px;
+            margin: 0 auto;
         }
 
-        h1 {
-            font-family: 'Roboto', sans-serif;
-            color: #1e3a8a; /* dark blue */
-            font-weight: 700;
-            font-size: 2.8rem;
+        .problems-container h1 {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            font-weight: 800;
+            font-size: 2.2rem;
             text-align: center;
             margin-bottom: 40px;
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
          .problems-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* exactly 3 cards per row */
-      gap: 24px;
-  }
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
 
-        .card {
+        .problem-card {
             background: #fff;
-            border: 2px solid #1e40af;
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 24px 28px;
-            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: box-shadow 0.3s ease, transform 0.3s ease;
-            cursor: default;
         }
 
-        .card:hover {
-            box-shadow: 0 16px 36px rgba(30, 58, 138, 0.25);
-            transform: translateY(-6px);
+        .problem-card:hover {
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
+            transform: translateY(-4px);
         }
 
-        .card-title {
-            font-size: 1.4rem;
+        .problem-card h5 {
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--text-dark);
             margin: 0 0 12px 0;
         }
 
-        .card-text {
-            font-size: 1rem;
-            color: #475569; /* muted dark slate */
+        .problem-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
             flex-grow: 1;
             margin-bottom: 20px;
+            line-height: 1.5;
         }
 
-        a.btn-primary {
-            background-color: #1e40af;
+        a.btn-solve {
+            background-color: var(--primary);
             color: white;
             padding: 12px 0;
             border-radius: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            font-weight: 600;
+            font-size: 1rem;
             text-align: center;
             text-decoration: none;
             display: block;
-            transition: background-color 0.3s ease;
-            user-select: none;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.2);
         }
 
-        a.btn-primary:hover,
-        a.btn-primary:focus {
-            background-color: #2563eb;
-            outline: none;
-            text-decoration: none;
+        a.btn-solve:hover {
+            background-color: #1e40af;
+            transform: translateY(-1px);
         }
 
         p.no-problems {
             text-align: center;
-            font-size: 1.2rem;
-            color: #64748b;
+            font-size: 1.1rem;
+            color: var(--text-muted);
             margin-top: 50px;
         }
     </style>
-</head>
-<body>
-    <div class="container">
+
+    <div class="problems-container">
         <h1>Coding Problems</h1>
 
         {% if problems %}
             <div class="problems-grid">
                 {% for p in problems %}
-                    <div class="card">
-                        <h5 class="card-title">{{ p.title }}</h5>
-                        <p class="card-text">{{ p.description|truncatechars:100 }}</p>
-                        <a href="{% url 'judge:problem_detail' slug=p.slug %}" class="btn-primary">Solve</a>
+                    <div class="problem-card">
+                        <h5>{{ p.title }}</h5>
+                        <p>{{ p.description|truncatechars:100 }}</p>
+                        <a href="{% url 'judge:problem_detail' slug=p.slug %}" class="btn-solve">Solve</a>
                     </div>
                 {% endfor %}
             </div>
@@ -120,5 +107,4 @@
             <p class="no-problems">No problems yet.</p>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

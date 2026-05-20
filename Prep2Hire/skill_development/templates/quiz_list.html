@@ -1,119 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Available Quizzes</title>
-<style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f9fafb;
-    color: #1e40af;
-    margin: 0;
-    padding: 40px 20px;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
+{% extends 'dashboard.html' %}
+{% load static %}
 
-  .container {
+{% block content %}
+<style>
+  .quiz-container {
     max-width: 1250px;
     width: 100%;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
-    padding: 36px 40px;
+    box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
+    padding: 15px 40px 40px;
+    margin: 0 auto;
   }
 
-  h2 {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    font-size: 2.8rem;
-    margin-top: 0;
-    margin-bottom: 36px;
-    border-bottom: 3px solid #2563eb;
-    padding-bottom: 12px;
+  .quiz-container h2 {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    font-weight: 800;
+    font-size: 2.2rem;
     text-align: center;
-    color: #1e40af;
+    margin-bottom: 40px;
+    border-bottom: 3px solid var(--primary);
+    padding-bottom: 12px;
+    letter-spacing: -0.5px;
   }
 
   .quiz-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
   }
 
-  .card {
-    border: 2px solid #1e40af;
-    border-radius: 14px;
-    padding: 20px 24px;
-    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.12);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  .quiz-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
   }
 
-  .card:hover {
-    box-shadow: 0 8px 28px rgba(30, 64, 175, 0.25);
+  .quiz-card:hover {
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
     transform: translateY(-4px);
   }
 
-  .card h3 {
-    font-size: 1.6rem;
-    margin-top: 0;
-    margin-bottom: 14px;
+  .quiz-card h3 {
+    font-size: 1.2rem;
     font-weight: 700;
-    color: #1e40af;
+    color: var(--text-dark);
+    margin: 0 0 12px 0;
   }
 
-  .card p {
-    font-size: 1rem;
-    margin: 0 0 18px 0;
-    color: #334155;
+  .quiz-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
     flex-grow: 1;
+    margin-bottom: 20px;
+    line-height: 1.5;
   }
 
-  .card a {
-    display: inline-block;
-    text-decoration: none;
-    background-color: #1e40af;
+  .quiz-card a {
+    background-color: var(--primary);
     color: white;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-weight: 700;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-weight: 600;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
-    user-select: none;
-    align-self: flex-start;
-  }
-
-  .card a:hover,
-  .card a:focus {
-    background-color: #2563eb;
-    outline: none;
+    text-align: center;
     text-decoration: none;
+    display: block;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.2);
   }
 
-  /* Responsive: 1 card per row on small screens */
+  .quiz-card a:hover {
+    background-color: #1e40af;
+    transform: translateY(-1px);
+  }
+
   @media (max-width: 720px) {
     .quiz-cards {
       grid-template-columns: 1fr;
     }
   }
 </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Available Quizzes</h2>
-    <div class="quiz-cards">
-      {% for quiz in quizzes %}
-        <div class="card">
-          <h3>{{ quiz.title }}</h3>
-          <p>{{ quiz.description }}</p>
-          <a href="{% url 'take_quiz' quiz.id %}">Take Quiz</a>
-        </div>
-      {% endfor %}
-    </div>
+
+<div class="quiz-container">
+  <h2>Available Quizzes</h2>
+  <div class="quiz-cards">
+    {% for quiz in quizzes %}
+      <div class="quiz-card">
+        <h3>{{ quiz.title }}</h3>
+        <p>{{ quiz.description }}</p>
+        <a href="{% url 'take_quiz' quiz.id %}">Take Quiz</a>
+      </div>
+    {% endfor %}
   </div>
-</body>
-</html>
+</div>
+{% endblock %}
