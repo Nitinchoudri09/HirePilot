@@ -243,7 +243,7 @@ nav .fas{
           <i class="fas fa-key" style = "color:#1e40af"></i>
           <span class="nav-item">Change Password</span>
         </a></li>
-        <li><a href="{% url 'logout' %}" class="logout" style="color:#1e40af">
+        <li><a href="{% url 'logout' %}" class="logout" style="color:#1e40af" onclick="return confirm('Are you sure you want to log out?');">
           <i class="fas fa-sign-out-alt" style = "color:#1e40af"></i>
           <span class="nav-item">Log out</span>
         </a></li>
