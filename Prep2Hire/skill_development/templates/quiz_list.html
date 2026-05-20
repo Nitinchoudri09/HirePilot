@@ -91,6 +91,7 @@
 
 <div class="quiz-container">
   <h2>Available Quizzes</h2>
+  {% if quizzes %}
   <div class="quiz-cards">
     {% for quiz in quizzes %}
       <div class="quiz-card">
@@ -100,5 +101,8 @@
       </div>
     {% endfor %}
   </div>
+  {% else %}
+    <p style="text-align:center; font-size:1.1rem; color:var(--text-muted); margin-top:50px;">No quizzes available yet. Check back soon!</p>
+  {% endif %}
 </div>
 {% endblock %}

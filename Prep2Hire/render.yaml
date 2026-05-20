@@ -3,7 +3,7 @@ services:
     name: prep2hire
     runtime: python
     rootDir: Prep2Hire
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python populate_quizzes.py && python populate_problems.py"
     startCommand: "gunicorn Prep2Hire.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: PYTHON_VERSION
