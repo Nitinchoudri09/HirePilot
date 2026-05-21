@@ -144,6 +144,80 @@
       margin: 0;
     }
 
+    /* Filters & Search */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-bar input, .filter-bar select {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .filter-bar button {
+      background: #1a237e;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .filter-bar button:hover {
+      background: #0d47a1;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px;
+      margin-bottom: 50px;
+    }
+
+    .pagination button {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: #f0f2f5;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #page-indicator {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
     @media (max-width: 992px) {
       .jobs-container {
         grid-template-columns: repeat(2, 1fr);
@@ -159,14 +233,33 @@
         width: 90%;
       }
     }
-
   </style>
 </head>
 <body>
   <br><br>
   <h1>Available Jobs</h1>
+  
+  <div class="filter-bar">
+    <input type="text" id="searchRole" placeholder="Search Role (e.g. Developer)">
+    <input type="text" id="searchLocation" placeholder="Location (e.g. New York)">
+    <select id="searchCategory">
+      <option value="">All Categories</option>
+      <option value="Software Engineer">Software Engineer</option>
+      <option value="Data Science">Data Science</option>
+      <option value="Design">Design</option>
+      <option value="Marketing">Marketing</option>
+    </select>
+    <button onclick="applyFilters()">Search Jobs</button>
+  </div>
+
   <div class="jobs-container" id="jobs-container">
     <!-- Job cards will be injected here -->
+  </div>
+
+  <div class="pagination">
+    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
+    <span id="page-indicator">Page 1</span>
+    <button id="nextPage" onclick="changePage(1)">Next</button>
   </div>
 
   <!-- Job Detail Modal -->
@@ -197,12 +290,21 @@
     const modalCompany = document.getElementById('modalCompany');
     const modalLocation = document.getElementById('modalLocation');
     const modalDescription = document.getElementById('modalDescription');
+    let currentJobUrl = '';
 
     function openModal(job) {
       modalTitle.textContent = job.name;
       modalCompany.textContent = job.company.name;
       modalLocation.textContent = job.locations.map(loc => loc.name).join(', ');
       modalDescription.innerHTML = job.contents;
+      
+      // The Muse API returns URL in job.refs.landing_page
+      if (job.refs && job.refs.landing_page) {
+        currentJobUrl = job.refs.landing_page;
+      } else {
+        currentJobUrl = '';
+      }
+      
       modal.style.display = 'flex';
     }
 
@@ -211,41 +313,85 @@
     }
 
     function applyJob() {
-      modal.style.display = 'none';
-      successModal.style.display = 'flex';
-
-      setTimeout(() => {
-        successModal.style.display = 'none';
-      }, 1800);
+      if (currentJobUrl) {
+        window.open(currentJobUrl, '_blank');
+      } else {
+        modal.style.display = 'none';
+        successModal.style.display = 'flex';
+        setTimeout(() => {
+          successModal.style.display = 'none';
+        }, 1800);
+      }
     }
 
-    // Random page for variety
-    const randomPage = Math.floor(Math.random() * 50) + 1;
-    const API_URL = `https://www.themuse.com/api/public/jobs?page=${randomPage}`;
+    let currentPage = 1;
+    let currentFilters = '';
 
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('jobs-container');
-        data.results.slice(0, 10).forEach(job => {
-          const card = document.createElement('div');
-          card.className = 'job-card';
-          card.innerHTML = `
-            <div class="job-title">${job.name}</div>
-            <div class="company-name">${job.company.name}</div>
-            <div class="location">${job.locations.map(loc => loc.name).join(', ')}</div>
-            <div class="show-more">Show Details</div>
-          `;
-          card.querySelector('.show-more').addEventListener('click', () => {
-            openModal(job);
+    function fetchJobs() {
+      const container = document.getElementById('jobs-container');
+      container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Loading jobs...</p>';
+      
+      let API_URL = `https://www.themuse.com/api/public/jobs?page=${currentPage}${currentFilters}`;
+
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+          container.innerHTML = '';
+          if (!data.results || data.results.length === 0) {
+            if (currentFilters) {
+              container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #555;">No jobs found matching your criteria. Try adjusting your filters.</p>';
+            } else {
+              container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #555;">No jobs currently available.</p>';
+            }
+            return;
+          }
+          
+          data.results.forEach(job => {
+            const card = document.createElement('div');
+            card.className = 'job-card';
+            card.innerHTML = `
+              <div class="job-title">${job.name}</div>
+              <div class="company-name">${job.company.name}</div>
+              <div class="location">${job.locations.map(loc => loc.name).join(', ')}</div>
+              <div class="show-more">Show Details</div>
+            `;
+            card.querySelector('.show-more').addEventListener('click', () => {
+              openModal(job);
+            });
+            container.appendChild(card);
           });
-          container.appendChild(card);
+
+          document.getElementById('page-indicator').textContent = `Page ${currentPage}`;
+          document.getElementById('prevPage').disabled = currentPage === 1;
+        })
+        .catch(err => {
+          container.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Failed to load jobs. Please try again later.</p>";
+          console.error(err);
         });
-      })
-      .catch(err => {
-        document.getElementById('jobs-container').innerHTML = "<p>Failed to load jobs. Please try again later.</p>";
-        console.error(err);
-      });
+    }
+
+    function applyFilters() {
+      const role = document.getElementById('searchRole').value;
+      const location = document.getElementById('searchLocation').value;
+      const category = document.getElementById('searchCategory').value;
+      
+      currentFilters = '';
+      if (role) currentFilters += `&level=${encodeURIComponent(role)}`;
+      if (location) currentFilters += `&location=${encodeURIComponent(location)}`;
+      if (category) currentFilters += `&category=${encodeURIComponent(category)}`;
+      
+      currentPage = 1;
+      fetchJobs();
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      if (currentPage < 1) currentPage = 1;
+      fetchJobs();
+    }
+
+    // Initial load
+    fetchJobs();
 
     // Dismiss modals on background click
     window.onclick = function (e) {

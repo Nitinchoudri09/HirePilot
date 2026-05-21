@@ -324,6 +324,7 @@
         <!-- Right Pane (Live Preview) -->
         <div class="right-pane">
             <div class="toolbar-preview">
+                <button class="toolbar-btn" title="Toggle Editor" onclick="toggleEditor()"><i class='bx bx-sidebar'></i></button>
                 <button class="toolbar-btn" title="Zoom In" onclick="zoomIn()"><i class='bx bx-zoom-in'></i></button>
                 <button class="toolbar-btn" title="Zoom Out" onclick="zoomOut()"><i class='bx bx-zoom-out'></i></button>
             </div>
@@ -506,7 +507,7 @@
         function updatePreview() {
             // Read basic inputs
             resumeData.personal.fullName = document.querySelector('[data-field="personal.fullName"]').value || 'Your Name';
-            resumeData.personal.jobTitle = document.querySelector('[data-field="personal.jobTitle"]').value || 'Job Title';
+            resumeData.personal.jobTitle = document.querySelector('[data-field="personal.jobTitle"]').value || '';
             resumeData.personal.email = document.querySelector('[data-field="personal.email"]').value || 'email@example.com';
             resumeData.personal.phone = document.querySelector('[data-field="personal.phone"]').value || '+1 234 567 890';
             resumeData.personal.location = document.querySelector('[data-field="personal.location"]').value || 'City, Country';
@@ -582,7 +583,7 @@
                 container.innerHTML = `
                     <div class="header-box">
                         <div class="h-name">${resumeData.personal.fullName}</div>
-                        <div class="h-title">${resumeData.personal.jobTitle}</div>
+                        ${resumeData.personal.jobTitle ? `<div class="h-title">${resumeData.personal.jobTitle}</div>` : ''}
                         <div class="h-contact">${resumeData.personal.email} • ${resumeData.personal.phone} • ${resumeData.personal.location}</div>
                     </div>
                     <div class="content-box">
@@ -599,7 +600,7 @@
                 container.innerHTML = `
                     <div class="sidebar">
                         <div class="h-name">${resumeData.personal.fullName}</div>
-                        <div class="h-title">${resumeData.personal.jobTitle}</div>
+                        ${resumeData.personal.jobTitle ? `<div class="h-title">${resumeData.personal.jobTitle}</div>` : ''}
                         <div class="h-contact">
                             <div>${resumeData.personal.email}</div>
                             <div>${resumeData.personal.phone}</div>
@@ -621,7 +622,7 @@
                 container.innerHTML = `
                     <div style="margin-bottom:20px;">
                         <div class="h-name">${resumeData.personal.fullName}</div>
-                        <div class="h-title">${resumeData.personal.jobTitle}</div>
+                        ${resumeData.personal.jobTitle ? `<div class="h-title">${resumeData.personal.jobTitle}</div>` : ''}
                         <div class="h-contact">
                             ${resumeData.personal.email} | ${resumeData.personal.phone} | ${resumeData.personal.location}
                         </div>
@@ -758,6 +759,16 @@
         function zoomIn() { scale += 0.1; document.getElementById('resumePreview').style.transform = `scale(${scale})`; }
         function zoomOut() { scale -= 0.1; document.getElementById('resumePreview').style.transform = `scale(${scale})`; }
 
+        // Editor Toggle
+        function toggleEditor() {
+            const leftPane = document.querySelector('.left-pane');
+            if(leftPane.style.display === 'none') {
+                leftPane.style.display = 'flex';
+            } else {
+                leftPane.style.display = 'none';
+            }
+        }
+
         // SortableJS Drag & Drop
         new Sortable(document.getElementById('sectionsContainer'), {
             animation: 150,
@@ -784,7 +795,8 @@
                     },
                     body: JSON.stringify({
                         title: title,
-                        content: resumeData
+                        content: resumeData,
+                        ats_score: resumeData.ats_score
                     })
                 });
                 

@@ -132,13 +132,15 @@
   }
 </style>
 
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 <div class="container-feed">
   <h2>HirePilot Connect - Community</h2>
   <a href="{% url 'create_post' %}" class="btn btn-primary">+ New Post</a>
 
   {% for post in posts %}
   <div class="post-card" id="post-{{ post.id }}">
-    <strong>{{ post.user.username }}</strong>
+    <strong>{{ post.user.first_name|default:post.user.username }}</strong>
     <span class="text-muted float-end">{{ post.created_at|date:"M d, Y H:i" }}</span>
 
     <p>{{ post.content }}</p>
@@ -152,7 +154,7 @@
       data-post-id="{{ post.id }}"
       aria-label="Like button for post {{ post.id }}"
     >
-      {% if post.has_liked %} ❤️ {% else %} 🤍 {% endif %}
+      <i class='bx {% if post.has_liked %}bxs-heart{% else %}bx-heart{% endif %}' style="font-size: 1.2rem;"></i>
       <span id="like-count-{{ post.id }}">{{ post.total_likes }}</span>
     </button>
 
@@ -185,7 +187,7 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            const icon = data.liked ? "❤️" : "🤍";
+            const icon = data.liked ? "<i class='bx bxs-heart' style='font-size: 1.2rem;'></i>" : "<i class='bx bx-heart' style='font-size: 1.2rem;'></i>";
             this.innerHTML =
               icon +
               ' <span id="like-count-' +

@@ -117,7 +117,7 @@
           {% for option in question.options.all %}
             <label>
               <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}"
-                {% if submitted %} disabled {% endif %}>
+                {% if submitted %} disabled {% else %} required {% endif %}>
               <span>{{ option.text }}</span>
             </label>
           {% endfor %}
@@ -147,6 +147,10 @@
           </li>
         {% endfor %}
       </ul>
+      <div style="margin-top: 30px; display: flex; gap: 15px;">
+        <a href="{% url 'skill_development:take_quiz' quiz.id %}" style="background-color: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Retake Quiz</a>
+        <a href="{% url 'skill_development:quizzes' %}" style="background-color: #e2e8f0; color: #1e293b; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Back to Quizzes</a>
+      </div>
     {% endif %}
   </div>
 </body>

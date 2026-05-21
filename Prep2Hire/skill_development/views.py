@@ -15,7 +15,10 @@ def course_list(request):
             response.raise_for_status()
             data = response.json()
             courses = data.get('results', [])
-            all_courses.extend(courses)
+            for course in courses:
+                locale_info = course.get('locale', {})
+                if locale_info.get('simple_english_title') == 'English' or locale_info.get('locale', '').startswith('en_'):
+                    all_courses.append(course)
         except Exception as e:
             print(f"Error fetching courses for profile ID {profile_id}: {e}")
 

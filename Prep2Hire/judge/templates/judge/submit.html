@@ -405,11 +405,11 @@
         <a href="{% url 'judge:problem_list' %}" class="btn btn-back">← Problems</a>
         <button class="btn btn-run" id="btn-run" onclick="runCode()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            Run Code
+            Run Custom Input
         </button>
-        <button class="btn btn-submit" id="btn-submit" onclick="submitCode()">
+        <button class="btn btn-submit" id="btn-submit" onclick="submitCode()" title="Evaluate against all test cases">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            Submit
+            Submit Solution
         </button>
     </div>
 </nav>
@@ -531,6 +531,12 @@
     async function runCode() {
         const code  = editor.getValue();
         const stdin = document.getElementById('stdin-textarea').value;
+        const strippedCode = code.replace(/#.*/g, '').trim();
+
+        if (!strippedCode) {
+            alert('Please write some code before running.');
+            return;
+        }
 
         // Switch to output tab
         switchIOTab('output');
@@ -607,7 +613,8 @@
     // ═══ Submit Code (form POST) ═══
     function submitCode() {
         const code = editor.getValue();
-        if (!code.trim()) {
+        const strippedCode = code.replace(/#.*/g, '').trim();
+        if (!strippedCode) {
             alert('Please write some code before submitting.');
             return;
         }

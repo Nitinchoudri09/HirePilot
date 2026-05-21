@@ -71,15 +71,17 @@ class HomeView(TemplateView):
     def get(self, request):
         return render(request, 'index.html')
 
+from .forms import SignupForm
+
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
             auth_login(request, user)          # auto-login after signup
             return redirect('dashboard')        # go straight to dashboard
     else:
-        form = UserCreationForm()
+        form = SignupForm()
     return render(request, 'signup.html', {'form': form})
 
 def custom_logout(request):
