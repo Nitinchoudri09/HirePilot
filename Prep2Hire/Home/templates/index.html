@@ -33,10 +33,10 @@
     .dropdown-content {
       display: none;
       position: absolute;
-      background-color: white;
+      background-color: var(--card-bg);
       min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      border-radius: 5px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      border-radius: 8px;
       z-index: 1;
     }
 
@@ -44,12 +44,12 @@
       padding: 10px 16px;
       display: block;
       text-decoration: none;
-      color: black;
+      color: var(--text-main);
     }
 
     .dropdown-content a:hover {
-      background-color: white;
-      color: blue;
+      background-color: var(--platinum);
+      color: var(--text-main);
     }
 
     .dropdown-trigger {
@@ -86,13 +86,14 @@
     }
 
     .search-modal-content {
-      background: white;
+      background: var(--card-bg);
       width: 90%;
       max-width: 600px;
       border-radius: 16px;
       padding: 30px;
       box-shadow: 0 25px 80px rgba(0,0,0,0.3);
       animation: slideDown 0.3s ease;
+      margin: 15% auto;
     }
 
     @keyframes fadeIn {
@@ -115,7 +116,7 @@
     .search-modal-header h3 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #192335;
+      color: var(--text-main);
       margin: 0;
     }
 
@@ -130,7 +131,7 @@
     }
 
     .search-close-btn:hover {
-      color: #192335;
+      color: var(--text-main);
     }
 
     .search-input-wrapper {
@@ -339,7 +340,7 @@
 
       <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
         <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="HirePilot Compass Logo" style="width: 45px; height: 45px; object-fit: contain;">
-        <span style="font-size: 28px; color: #192335; font-family: 'League Spartan', sans-serif; font-weight: 800; letter-spacing: -0.5px;">HirePilot</span>
+        <span style="font-size: 28px; color: var(--text-main); font-family: 'League Spartan', sans-serif; font-weight: 800; letter-spacing: -0.5px;">HirePilot</span>
       </a>
 
       <nav class="navbar" data-navbar>
@@ -347,7 +348,7 @@
         <div class="wrapper">
           <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
             <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="HirePilot Compass Logo" style="width: 40px; height: 40px; object-fit: contain;">
-            <span style="font-size: 26px; color: #192335; font-family: 'League Spartan', sans-serif; font-weight: 800;">HirePilot</span>
+            <span style="font-size: 26px; color: var(--text-main); font-family: 'League Spartan', sans-serif; font-weight: 800;">HirePilot</span>
           </a>
 
           <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
@@ -358,31 +359,31 @@
         <ul class="navbar-list">
 
           <li class="navbar-item">
-            <a href="#home" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Home</a>
+            <a href="#home" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Home</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/jobs/available-jobs/" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Jobs</a>
+            <a href="/jobs/available-jobs/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Jobs</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/resume-analyzer/" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Resume</a>
+            <a href="/resume-analyzer/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Resume</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/skill-development/courses/" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Courses</a>
+            <a href="/skill-development/courses/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Courses</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/skill-development/quizzes/" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Quiz</a>
+            <a href="/skill-development/quizzes/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Quiz</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/coding/" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Code Practice</a>
+            <a href="/coding/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Code Practice</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/connect/" class="navbar-link" data-nav-link style="color: #192335; font-weight: 600;">Community</a>
+            <a href="/connect/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Community</a>
           </li>
 
         </ul>
@@ -417,7 +418,7 @@
               <a href="{% url 'login' %}" class="btn" style="background: transparent; color: #2563eb; border: 2.5px solid #2563eb; border-radius: 50px; padding: 14px 30px; font-weight: 700; font-size: 1.2rem; margin-left: 10px; text-decoration: none; white-space: nowrap; display: inline-block;">Login / Signup ➔</a>
             {% endif %}
         <button class="header-action-btn" aria-label="open menu" data-nav-toggler>
-          <ion-icon name="menu-outline" aria-hidden="true" style="color: #192335;"></ion-icon>
+          <ion-icon name="menu-outline" aria-hidden="true" style="color: var(--text-main);"></ion-icon>
         </button>
 
       </div>
@@ -448,7 +449,7 @@
               GUIDING STUDENT FUTURES | CONNECTING TOMORROW'S TALENT
             </p>
 
-            <h1 class="h1 section-title" style="font-size: 4.5rem; font-weight: 800; color: #192335; line-height: 1.1; margin-bottom: 25px; font-family: 'League Spartan', sans-serif; letter-spacing: -1px;">
+            <h1 class="h1 section-title" style="font-size: 4.5rem; font-weight: 800; color: var(--text-main); line-height: 1.1; margin-bottom: 25px; font-family: 'League Spartan', sans-serif; letter-spacing: -1px;">
               Crack Interviews with AI-Powered Resume Analysis, Mock Interviews & Skill Preparation
             </h1>
 
@@ -461,7 +462,7 @@
                 Start Preparing 
                 <span>➔</span>
               </a>
-              <a href="/resume-analyzer/" class="btn" style="display: inline-flex; align-items: center; justify-content: center; background: white; color: #2563eb; padding: 18px 36px; border-radius: 50px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: all 0.3s ease; border: 2.5px solid #2563eb;">
+              <a href="/resume-analyzer/" class="btn" style="display: inline-flex; align-items: center; justify-content: center; background: var(--card-bg); color: #2563eb; padding: 18px 36px; border-radius: 50px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: all 0.3s ease; border: 2.5px solid #2563eb;">
                 Analyze Resume
               </a>
             </div>
@@ -477,19 +478,19 @@
             <img src="{% static 'assets/images/student_hero.png' %}" alt="Student" style="position: relative; z-index: 1; max-width: 90%; height: auto; border-radius: 50% 50% 10px 10px;">
 
             <!-- Floating Card 1 -->
-            <div style="position: absolute; top: 15%; right: -10px; background: white; padding: 20px 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); z-index: 2; display: flex; align-items: center; gap: 15px;">
+            <div style="position: absolute; top: 15%; right: -10px; background: var(--card-bg); padding: 20px 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); z-index: 2; display: flex; align-items: center; gap: 15px;">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               <div>
-                <h3 style="font-size: 1.8rem; font-weight: 800; color: #192335; margin: 0; font-family: 'League Spartan', sans-serif;">4500+</h3>
+                <h3 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin: 0; font-family: 'League Spartan', sans-serif;">4500+</h3>
                 <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">Online Course</p>
               </div>
             </div>
 
             <!-- Floating Card 2 -->
-            <div style="position: absolute; bottom: 15%; left: -20px; background: white; padding: 20px 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); z-index: 2; display: flex; align-items: center; gap: 15px;">
+            <div style="position: absolute; bottom: 15%; left: -20px; background: var(--card-bg); padding: 20px 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); z-index: 2; display: flex; align-items: center; gap: 15px;">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               <div>
-                <h3 style="font-size: 1.8rem; font-weight: 800; color: #192335; margin: 0; font-family: 'League Spartan', sans-serif;">7500+</h3>
+                <h3 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin: 0; font-family: 'League Spartan', sans-serif;">7500+</h3>
                 <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">Active student</p>
               </div>
             </div>
