@@ -4,65 +4,76 @@
   <title>Career Recommendation</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f4fb;
-      color: #121212; /* Dark black text */
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #050508;
+      background-image: radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.1), transparent 25%), radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1), transparent 25%);
+      color: #f8fafc;
       padding: 40px;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
+      margin: 0;
     }
 
     .career-container {
-      background-color: #ffffff;
-      border: 2px solid #1e3a8a; /* Deep blue border */
+      background: rgba(20, 20, 30, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 30px 40px;
       max-width: 600px;
       width: 100%;
-      box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3);
+      height: fit-content;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
 
     h2 {
-      color: #1e3a8a; /* Blue shade */
+      color: #f8fafc;
       font-size: 2.2rem;
+      margin-top: 0;
       margin-bottom: 15px;
-      font-weight: 700;
-      border-bottom: 3px solid #2563eb; /* brighter blue underline */
+      font-weight: 800;
+      border-bottom: 3px solid #3b82f6;
       padding-bottom: 8px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.1);
     }
 
     h3 {
-      color: #0f172a; /* very dark blue/black */
-      font-weight: 600;
+      color: #3b82f6;
+      font-weight: 700;
       font-size: 1.6rem;
       margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
     }
 
     p {
       font-size: 1.1rem;
       line-height: 1.6;
       margin-bottom: 18px;
-      color: #1e293b; /* dark slate blue */
+      color: #cbd5e1;
     }
 
     strong {
-      color: #1e40af; /* medium blue for emphasis */
+      color: #f8fafc;
     }
 
     a {
       display: inline-block;
       margin-top: 20px;
-      padding: 10px 22px;
-      background-color: #1e40af; /* blue background */
-      color: #ffffff;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
       text-decoration: none;
-      font-weight: 600;
-      border-radius: 6px;
-      transition: background-color 0.3s ease;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
     }
 
     a:hover {
-      background-color: #2563eb; /* lighter blue on hover */
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
     }
 
     @media (max-width: 600px) {
