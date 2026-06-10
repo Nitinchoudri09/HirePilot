@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file (for local development)
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -108,3 +112,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
 ]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Google OAuth 2.0
+# Loaded from .env (local) or environment variables (production/Render)
+# ─────────────────────────────────────────────────────────────────────────────
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+# In production, set GOOGLE_REDIRECT_URI to your Render domain callback URL.
+# e.g. https://your-app.onrender.com/auth/google/callback/
+GOOGLE_REDIRECT_URI = os.getenv(
+    'GOOGLE_REDIRECT_URI',
+    'http://127.0.0.1:8000/auth/google/callback/'
+)
