@@ -13,3 +13,4 @@ psycopg2-binary==2.9.11
 google-auth==2.29.0
 google-auth-oauthlib==1.2.1
 python-dotenv==1.0.0
+razorpay==1.4.2
