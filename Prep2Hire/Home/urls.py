@@ -10,9 +10,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', views.custom_logout, name='logout'),
     path('delete-account/', views.delete_account, name='delete_account'),
-    # Google OAuth 2.0
-    path('auth/google/', views.google_oauth_redirect, name='google_oauth_redirect'),
-    path('auth/google/callback/', views.google_oauth_callback, name='google_oauth_callback'),
+    # Supabase Auth — called by JS frontend after Supabase OAuth completes
+    path('auth/supabase/callback/', views.supabase_auth_callback, name='supabase_auth_callback'),
     path('career_recommendation/', views.career_quiz, name='career_recommendation'),
     path('carrer_recommendation/', views.career_quiz, name='carrer_recommendation_legacy'),
     path('connect/', views.post_list, name='post_list'),

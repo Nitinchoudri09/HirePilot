@@ -114,14 +114,14 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Google OAuth 2.0
-# Loaded from .env (local) or environment variables (production/Render)
+# Supabase Auth
+# JS SDK (loaded via CDN in templates) handles OAuth; Django verifies the token.
 # ─────────────────────────────────────────────────────────────────────────────
-GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
-# In production, set GOOGLE_REDIRECT_URI to your Render domain callback URL.
-# e.g. https://your-app.onrender.com/auth/google/callback/
-GOOGLE_REDIRECT_URI = os.getenv(
-    'GOOGLE_REDIRECT_URI',
-    'http://127.0.0.1:8000/auth/google/callback/'
-)
+SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://mbugyhaebsauetyywgse.supabase.co')
+SUPABASE_ANON_KEY = os.getenv('SUPABASE_ANON_KEY', '')
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Razorpay Payment Gateway
+# ─────────────────────────────────────────────────────────────────────────────
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', '')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', '')

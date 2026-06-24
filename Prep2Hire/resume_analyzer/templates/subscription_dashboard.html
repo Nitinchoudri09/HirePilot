@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Subscription - HirePilot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        h1 { margin: 0; font-size: 2rem; color: #1e293b; }
+        .nav-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .plan-title { font-size: 1.5rem; font-weight: 700; margin:0; }
+        .badge {
+            background: #dbeafe; color: #1d4ed8;
+            padding: 6px 12px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge.premium { background: #fef08a; color: #854d0e; }
+        .badge.expired { background: #fee2e2; color: #b91c1c; }
+
+        .progress-container { margin: 30px 0; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 500;}
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.5s ease;
+        }
+        .progress-fill.low { background: #f59e0b; }
+        .progress-fill.empty { background: #ef4444; }
+
+        .btn {
+            background: #3b82f6; color: white;
+            padding: 12px 24px; border-radius: 8px;
+            text-decoration: none; font-weight: 600;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #2563eb; }
+
+        table {
+            width: 100%; border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            text-align: left; padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th { color: #64748b; font-weight: 600; font-size: 0.9rem; }
+        .score-good { color: #10b981; font-weight: 600; }
+        .score-avg { color: #f59e0b; font-weight: 600; }
+        .score-bad { color: #ef4444; font-weight: 600; }
+        
+        .empty-state {
+            text-align: center; color: #64748b; padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>My Subscription</h1>
+        <div class="nav-links">
+            <a href="{% url 'dashboard' %}">&larr; Dashboard</a> |
+            <a href="{% url 'analyze_resume' %}">Analyze Resume</a>
+        </div>
+    </div>
+
+    <!-- CURRENT PLAN CARD -->
+    <div class="card">
+        <div class="plan-header">
+            <div>
+                <p style="margin:0; color:#64748b; font-size:0.9rem;">Current Plan</p>
+                <h2 class="plan-title">{{ subscription.plan.name|default:"Free Tier" }}</h2>
+            </div>
+            <div>
+                {% if not subscription.plan %}
+                    <span class="badge">Free</span>
+                {% elif subscription.status == 'expired' %}
+                    <span class="badge expired">Expired</span>
+                {% elif subscription.plan.plan_type == 'premium' %}
+                    <span class="badge premium">Premium Active</span>
+                {% else %}
+                    <span class="badge">Basic Active</span>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if subscription.plan %}
+        <div class="progress-container">
+            <div class="progress-header">
+                <span>Resume Analyses Used</span>
+                <span>{{ subscription.credits_remaining }} / {{ subscription.plan.credits }} left</span>
+            </div>
+            <div class="progress-bar">
+                <!-- Calc width: (used / total) * 100 -->
+                <div class="progress-fill {% if subscription.credits_remaining == 0 %}empty{% elif subscription.credits_remaining <= 2 %}low{% endif %}" 
+                     style="width: {{ subscription.usage_percentage }}%;"></div>
+            </div>
+        </div>
+        
+        <p style="color: #64748b; font-size: 0.95rem;">
+            Valid until: <strong>{{ subscription.expiry_date|date:"d M Y" }}</strong> 
+            ({{ subscription.days_remaining }} days left)
+        </p>
+        {% else %}
+        <p style="color: #64748b; margin-bottom: 24px;">You are currently on the free tier. Upgrade to unlock powerful ATS analysis features.</p>
+        {% endif %}
+
+        <div style="margin-top: 24px;">
+            <a href="{% url 'pricing_page' %}" class="btn">
+                {% if subscription.plan %}Renew or Upgrade{% else %}View Plans{% endif %}
+            </a>
+        </div>
+    </div>
+
+    <!-- USAGE HISTORY -->
+    <div class="card">
+        <h3 style="margin-top:0;">Recent Analyses</h3>
+        {% if history %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Target Role</th>
+                    <th>ATS Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in history %}
+                <tr>
+                    <td>{{ item.created_at|date:"d M Y, H:i" }}</td>
+                    <td>{{ item.job_title|default:"Not specified" }}</td>
+                    <td>
+                        <span class="{% if item.ats_score >= 75 %}score-good{% elif item.ats_score >= 50 %}score-avg{% else %}score-bad{% endif %}">
+                            {{ item.ats_score }}%
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>You haven't analyzed any resumes yet.</p>
+            <a href="{% url 'analyze_resume' %}" class="btn" style="margin-top:10px;">Analyze Now</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- PAYMENT HISTORY -->
+    {% if payments %}
+    <div class="card">
+        <h3 style="margin-top:0;">Payment History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Plan</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payments %}
+                <tr>
+                    <td>{{ p.paid_at|date:"d M Y" }}</td>
+                    <td>{{ p.plan.name }}</td>
+                    <td>₹{{ p.amount }}</td>
+                    <td><span style="color:#10b981; font-weight:500;">✓ Paid</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

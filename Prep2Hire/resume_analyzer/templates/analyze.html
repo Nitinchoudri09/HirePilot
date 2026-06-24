@@ -2,133 +2,216 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Resume Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f9fafb; /* very light gray */
-            color: #1e293b; /* dark slate blue */
+            background-color: #f8fafc;
+            color: #0f172a;
             margin: 0;
             padding: 40px 20px;
             display: flex;
             justify-content: center;
             min-height: 100vh;
         }
-
         .container {
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.15);
-            padding: 32px 36px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
         }
-
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 16px;
+        }
         h1 {
             font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            font-size: 2.6rem;
-            margin-top: 0;
-            margin-bottom: 24px;
-            color: #1e3a8a; /* bright blue */
-            text-align: center;
-            border-bottom: 3px solid #1e3a8a; /* lighter blue underline */
-            padding-bottom: 10px;
+            font-size: 2rem;
+            margin: 0;
+            color: #1e3a8a;
         }
-
+        .credits-badge {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
         form {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 20px;
         }
-
-        form p {
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        input[type="file"],
-        input[type="text"],
-        textarea,
-        select {
+        .form-input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 14px;
             font-size: 1rem;
-            border: 2px solid #cbd5e1; /* light border */
-            border-radius: 8px;
-            transition: border-color 0.3s ease;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            transition: all 0.3s ease;
             font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
         }
-
-        input[type="file"]:focus,
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
+        .form-input:focus {
             border-color: #3b82f6;
+            background: #ffffff;
             outline: none;
-            box-shadow: 0 0 6px #3b82f6aa;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
-
         button[type="submit"] {
-            background-color: #1e3a8a;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
             border: none;
-            padding: 14px 0;
-            font-size: 1.2rem;
-            font-weight: 700;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
             border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
         }
-
-        button[type="submit"]:hover,
-        button[type="submit"]:focus {
-            background-color: #1d4ed8;
-            outline: none;
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
-
-        h2, h3 {
-            font-family: 'Roboto', sans-serif;
-            color: #1e40af;
-            margin-top: 32px;
-            margin-bottom: 16px;
-            font-weight: 700;
+        h2 { color: #1e40af; margin-top: 32px; font-weight: 700; }
+        h3 { color: #334155; margin-top: 24px; font-weight: 600; }
+        ul { padding-left: 20px; color: #475569; line-height: 1.6; }
+        li { margin-bottom: 8px; }
+        
+        /* Popup Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
         }
-
-        ul {
-            padding-left: 20px;
-            color: #475569;
-            font-size: 1rem;
-            margin-top: 0;
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s ease-out forwards;
         }
-
-        ul li {
-            margin-bottom: 8px;
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal h2 { margin-top: 0; color: #ef4444; }
+        .modal p { color: #475569; margin: 16px 0 24px; line-height: 1.5; }
+        .btn-upgrade {
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .btn-upgrade:hover { background: #059669; }
+        .btn-close {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            margin-left: 12px;
+            cursor: pointer;
+        }
+        .nav-links {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+
+    {% if show_upgrade_popup %}
+    <div class="modal-overlay" id="upgradeModal">
+        <div class="modal">
+            <h2>Out of Credits!</h2>
+            <p>You have exhausted your resume analysis limit. Upgrade your plan to continue unlocking ATS insights and getting hired faster.</p>
+            <div>
+                <a href="{% url 'pricing_page' %}" class="btn-upgrade">View Plans</a>
+                <button class="btn-close" onclick="document.getElementById('upgradeModal').style.display='none'">Close</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="container">
-        <h1>AI Resume Analyzer</h1>
+        <div class="nav-links">
+            <a href="{% url 'dashboard' %}">&larr; Back to Dashboard</a> |
+            <a href="{% url 'subscription_dashboard' %}">My Subscription</a>
+        </div>
+        
+        <div class="header">
+            <h1>ATS Analyzer</h1>
+            <div class="credits-badge">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                {{ subscription.credits_remaining|default:"0" }} Credits Left
+            </div>
+        </div>
+
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Analyze</button>
+            <button type="submit">Analyze Resume</button>
         </form>
 
-        {% if score %}
-            <h2>Match Score: {{ score }}%</h2>
-        {% endif %}
+        {% if score is not None %}
+            <h2>ATS Match Score: {{ score }}%</h2>
+            
+            {% if missing_words %}
+                <h3>Missing Keywords</h3>
+                <p style="color:#ef4444; font-size:0.95rem;">Consider adding these keywords to your resume if you have the experience:</p>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    {% for word in missing_words|slice:":15" %}
+                        <span style="background:#fee2e2; color:#b91c1c; padding:4px 10px; border-radius:6px; font-size:0.85rem;">{{ word }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-        {% if suggestions %}
-            <h3>Suggestions to Improve:</h3>
-            <ul>
-                {% for advice in suggestions %}
-                    <li>{{ advice }}</li>
-                {% endfor %}
-            </ul>
+            {% if suggestions %}
+                <h3>Suggestions to Improve:</h3>
+                <ul>
+                    {% for advice in suggestions %}
+                        <li>{{ advice }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         {% endif %}
     </div>
+
 </body>
 </html>

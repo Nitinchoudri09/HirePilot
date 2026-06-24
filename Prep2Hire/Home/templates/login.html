@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login — HirePilot</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -567,10 +569,10 @@
         <div class="divider"><span>or continue with</span></div>
         
         <div class="social-btns">
-          <a href="{% url 'google_oauth_redirect' %}" class="btn-social" id="btn-google-login">
+          <button type="button" class="btn-social" id="btn-google-login" onclick="loginWithGoogle()">
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M24 12.27c0-.84-.07-1.65-.2-2.43H12v4.61h6.72a5.75 5.75 0 01-2.49 3.77v3.13h4.03c2.36-2.18 3.74-5.38 3.74-9.08z"/><path fill="#34A853" d="M12 24c3.38 0 6.22-1.12 8.29-3.03l-4.03-3.13c-1.12.75-2.55 1.2-4.26 1.2-3.28 0-6.06-2.22-7.05-5.2H.82v3.23C2.88 21.1 7.12 24 12 24z"/><path fill="#FBBC05" d="M4.95 13.84a7.17 7.17 0 010-3.68V6.93H.82a12.01 12.01 0 000 10.14l4.13-3.23z"/><path fill="#4285F4" d="M12 4.96c1.84 0 3.49.63 4.8 1.88l3.6-3.6C18.22 1.12 15.38 0 12 0 7.12 0 2.88 2.9.82 6.93l4.13 3.23c.99-2.98 3.77-5.2 7.05-5.2z"/></svg>
             Google
-          </a>
+          </button>
           <a href="#" class="btn-social">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
             GitHub
@@ -587,6 +589,70 @@
   </div>
 
   <script>
+    // ── Supabase client ────────────────────────────────────────────────────
+    const SUPABASE_URL  = 'https://mbugyhaebsauetyywgse.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1idWd5aGFlYnNhdWV0eXl3Z3NlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjg4NjksImV4cCI6MjA5Nzg0NDg2OX0.AO-zo3Sox5aaCS6ZVFIaeJF20NJTXTdPsquHS0u8J9g';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ── On page load: only act if returning from OAuth redirect ──────────
+    (async () => {
+      const isOAuthCallback =
+        window.location.hash.includes('access_token') ||
+        window.location.search.includes('code=');
+
+      if (isOAuthCallback) {
+        // We just came back from Google via Supabase — exchange the token
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (session && session.access_token) {
+          const btn = document.getElementById('btn-google-login');
+          if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+          await exchangeTokenWithDjango(session);
+        }
+      } else {
+        // Normal page visit — clear any stale Supabase session so it doesn't
+        // auto-redirect next time the user opens the login page.
+        await _supabase.auth.signOut();
+      }
+    })();
+
+    // ── Trigger Supabase Google OAuth ────────────────────────────────────
+    async function loginWithGoogle() {
+      const btn = document.getElementById('btn-google-login');
+      if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
+      const { error } = await _supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/login/' },
+      });
+      if (error) {
+        alert('Google sign-in error: ' + error.message);
+        if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M24 12.27c0-.84-.07-1.65-.2-2.43H12v4.61h6.72a5.75 5.75 0 01-2.49 3.77v3.13h4.03c2.36-2.18 3.74-5.38 3.74-9.08z"/><path fill="#34A853" d="M12 24c3.38 0 6.22-1.12 8.29-3.03l-4.03-3.13c-1.12.75-2.55 1.2-4.26 1.2-3.28 0-6.06-2.22-7.05-5.2H.82v3.23C2.88 21.1 7.12 24 12 24z"/><path fill="#FBBC05" d="M4.95 13.84a7.17 7.17 0 010-3.68V6.93H.82a12.01 12.01 0 000 10.14l4.13-3.23z"/><path fill="#4285F4" d="M12 4.96c1.84 0 3.49.63 4.8 1.88l3.6-3.6C18.22 1.12 15.38 0 12 0 7.12 0 2.88 2.9.82 6.93l4.13 3.23c.99-2.98 3.77-5.2 7.05-5.2z"/></svg> Google'; }
+      }
+    }
+
+    // ── POST token to Django → get Django session → redirect ─────────────
+    async function exchangeTokenWithDjango(session) {
+      try {
+        const res = await fetch('/auth/supabase/callback/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            email:        session.user?.email        || '',
+            full_name:    session.user?.user_metadata?.full_name || '',
+          }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          window.location.href = data.redirect || '/dashboard/';
+        } else {
+          alert('Sign-in failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Network error: ' + err.message);
+      }
+    }
+
+    // ── Password toggle ───────────────────────────────────────────────────
     function togglePassword(inputId, button) {
       const input = document.getElementById(inputId);
       const icon = button.querySelector('svg');

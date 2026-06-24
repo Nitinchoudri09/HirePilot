@@ -15,124 +15,104 @@ from django.contrib.auth import login as auth_login
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Google OAuth 2.0 — Sign in with Google
+# Supabase Auth — Token verification imports
 # ─────────────────────────────────────────────────────────────────────────────
-from google_auth_oauthlib.flow import Flow
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
+import json
+import requests as http_requests
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 import os
 
-GOOGLE_AUTH_SCOPES = [
-    'openid',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-]
 
-
-def _build_google_flow():
-    """Construct an OAuth2 Flow object from Django settings."""
-    client_config = {
-        "web": {
-            "client_id": settings.GOOGLE_CLIENT_ID,
-            "client_secret": settings.GOOGLE_CLIENT_SECRET,
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "redirect_uris": [settings.GOOGLE_REDIRECT_URI],
-        }
-    }
-    flow = Flow.from_client_config(
-        client_config,
-        scopes=GOOGLE_AUTH_SCOPES,
-        redirect_uri=settings.GOOGLE_REDIRECT_URI,
-    )
-    return flow
-
-
-def google_oauth_redirect(request):
+# ─────────────────────────────────────────────────────────────────────────────
+# Supabase Auth — Token verification + Django session creation
+# Called via POST from the frontend JS after Supabase completes the OAuth flow.
+# ─────────────────────────────────────────────────────────────────────────────
+@csrf_exempt
+def supabase_auth_callback(request):
     """
-    Step 1: Redirect the user to Google’s consent screen.
-    Stores the ‘state’ token in the session for CSRF protection.
-    """
-    # Allow insecure transport in local dev (remove / override in production)
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    flow = _build_google_flow()
-    authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true',
-        prompt='select_account',
-    )
-    request.session['google_oauth_state'] = state
-    return redirect(authorization_url)
+    Receives a POST from the Supabase JS SDK after a successful OAuth login.
+    Body JSON: { access_token: "...", email: "...", full_name: "..." }
 
-
-def google_oauth_callback(request):
+    Steps:
+      1. Verify the access token with Supabase's /auth/v1/user endpoint.
+      2. Get-or-create a Django User from the verified email.
+      3. Log the user in (create Django session).
+      4. Return JSON { ok: true, redirect: "/dashboard/" }.
     """
-    Step 2: Google redirects back here with ?code=... and ?state=...
-    We exchange the code for tokens, extract the user’s profile,
-    then create or log in the matching Django user.
-    """
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
-    # CSRF state check
-    state = request.session.get('google_oauth_state')
-    if not state or state != request.GET.get('state'):
-        messages.error(request, 'Invalid OAuth state. Please try signing in again.')
-        return redirect('login')
+    if request.method != 'POST':
+        return JsonResponse({'ok': False, 'error': 'POST required'}, status=405)
 
     try:
-        flow = _build_google_flow()
-        flow.fetch_token(authorization_response=request.build_absolute_uri())
-        credentials = flow.credentials
+        body = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'ok': False, 'error': 'Invalid JSON'}, status=400)
 
-        # Verify & decode the ID token
-        id_info = id_token.verify_oauth2_token(
-            credentials.id_token,
-            google_requests.Request(),
-            settings.GOOGLE_CLIENT_ID,
-            clock_skew_in_seconds=10,
+    access_token = body.get('access_token', '').strip()
+    if not access_token:
+        return JsonResponse({'ok': False, 'error': 'Missing access_token'}, status=400)
+
+    # ─ Verify token with Supabase REST API ──────────────────────────────
+    supabase_url = settings.SUPABASE_URL
+    supabase_anon_key = settings.SUPABASE_ANON_KEY
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'apikey': supabase_anon_key,
+    }
+    try:
+        resp = http_requests.get(
+            f'{supabase_url}/auth/v1/user',
+            headers=headers,
+            timeout=10,
         )
+        if resp.status_code != 200:
+            return JsonResponse(
+                {'ok': False, 'error': 'Supabase token verification failed'},
+                status=401,
+            )
+        user_data = resp.json()
+    except http_requests.RequestException as exc:
+        return JsonResponse({'ok': False, 'error': f'Network error: {exc}'}, status=502)
 
-        google_email = id_info.get('email', '').lower()
-        first_name = id_info.get('given_name', '')
-        last_name = id_info.get('family_name', '')
+    # ─ Extract user info ──────────────────────────────────────────────────
+    email = (user_data.get('email') or body.get('email', '')).lower().strip()
+    if not email:
+        return JsonResponse({'ok': False, 'error': 'No email in Supabase response'}, status=400)
 
-        if not google_email:
-            messages.error(request, 'Could not retrieve your email from Google. Please try again.')
-            return redirect('login')
+    user_meta = user_data.get('user_metadata', {})
+    full_name  = user_meta.get('full_name') or user_meta.get('name') or body.get('full_name', '')
+    name_parts = full_name.split(' ', 1) if full_name else []
+    first_name = name_parts[0] if name_parts else ''
+    last_name  = name_parts[1] if len(name_parts) > 1 else ''
 
-        # Get-or-create user by email
-        user, created = User.objects.get_or_create(
-            email=google_email,
-            defaults={
-                'username': google_email.split('@')[0],
-                'first_name': first_name,
-                'last_name': last_name,
-            }
-        )
+    # ─ Get-or-create Django user ─────────────────────────────────────────
+    user, created = User.objects.get_or_create(
+        email=email,
+        defaults={
+            'username': email.split('@')[0],
+            'first_name': first_name,
+            'last_name': last_name,
+        }
+    )
+    if created:
+        base_username = email.split('@')[0]
+        username = base_username
+        counter = 1
+        while User.objects.filter(username=username).exclude(pk=user.pk).exists():
+            username = f'{base_username}{counter}'
+            counter += 1
+        user.username = username
+        user.set_unusable_password()  # Supabase/Google users don't need a local password
+        user.save()
 
-        # If the username collides with an existing account, make it unique
-        if created:
-            base_username = google_email.split('@')[0]
-            username = base_username
-            counter = 1
-            while User.objects.filter(username=username).exclude(pk=user.pk).exists():
-                username = f"{base_username}{counter}"
-                counter += 1
-            user.username = username
-            user.set_unusable_password()   # Google users don’t need a password
-            user.save()
+    # ─ Log in — create Django session ────────────────────────────────────
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    auth_login(request, user)
 
-        # Log in without requiring a password backend
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
-        auth_login(request, user)
-        messages.success(request, f'Welcome, {user.first_name or user.username}! You’re signed in with Google.')
-        return redirect('dashboard')
+    return JsonResponse({'ok': True, 'redirect': '/dashboard/'})
 
-    except Exception as exc:
-        messages.error(request, f'Google sign-in failed: {exc}')
-        return redirect('login')
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
