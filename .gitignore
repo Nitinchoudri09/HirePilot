@@ -28,7 +28,8 @@ ENV/
 # ── Django ────────────────────────────────────────────────────────────────────
 db.sqlite3
 *.sqlite3
-staticfiles/
+staticfiles/*
+!staticfiles/.gitkeep
 media/
 *.log
 

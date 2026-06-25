@@ -3,6 +3,11 @@ from django.conf import settings
 from django.utils import timezone
 
 
+def _site_url():
+    """Return the site base URL (no trailing slash). Reads SITE_URL from settings."""
+    return getattr(settings, 'SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
+
+
 def send_payment_confirmation(user, plan, payment):
     """Email sent after successful Razorpay payment."""
     try:
@@ -25,7 +30,7 @@ Your payment has been successfully processed!
 
 You can now analyze up to {plan.credits} resumes with our ATS engine.
 
-Visit your dashboard: http://127.0.0.1:8000/resume-analyzer/subscription/
+Visit your dashboard: {_site_url()}/resume-analyzer/subscription/
 
 Thanks for choosing HirePilot! 🚀
 
@@ -52,7 +57,7 @@ You have only {remaining} resume analysis remaining on your current plan.
 
 Don't miss out! Upgrade your plan to continue improving your resume and landing interviews.
 
-👉 Upgrade now: http://127.0.0.1:8000/resume-analyzer/pricing/
+👉 Upgrade now: {_site_url()}/resume-analyzer/pricing/
 
 – The HirePilot Team
 """
@@ -77,7 +82,7 @@ Your {subscription.plan.name} plan expires on {subscription.expiry_date.strftime
 
 Renew now to keep your ATS analysis access uninterrupted.
 
-👉 Renew: http://127.0.0.1:8000/resume-analyzer/pricing/
+👉 Renew: {_site_url()}/resume-analyzer/pricing/
 
 – The HirePilot Team
 """

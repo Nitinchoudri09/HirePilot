@@ -1,0 +1,2 @@
+# This file intentionally left blank.
+# It ensures the static/ directory is tracked by git and exists on Render at collectstatic time.

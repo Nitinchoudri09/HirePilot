@@ -1,0 +1,2 @@
+# This file intentionally left blank.
+# Ensures the staticfiles/ directory exists so collectstatic can write into it on Render.
