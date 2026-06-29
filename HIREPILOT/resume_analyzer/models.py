@@ -33,7 +33,7 @@ class UserSubscription(models.Model):
     ]
     user            = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription')
     plan            = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL, null=True)
-    credits_remaining = models.PositiveIntegerField(default=0)
+    credits_remaining = models.PositiveIntegerField(default=2)
     start_date      = models.DateTimeField(auto_now_add=True)
     expiry_date     = models.DateTimeField(null=True, blank=True)
     status          = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
@@ -101,6 +101,7 @@ class ResumeAnalysisHistory(models.Model):
     ats_score  = models.FloatField()
     missing_keywords = models.JSONField(default=list)
     suggestions      = models.JSONField(default=list)
+    detailed_report  = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

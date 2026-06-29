@@ -10,6 +10,7 @@ class ResumeForm(forms.Form):
         })
     )
     job_description = forms.CharField(
+        required=False,
         widget=forms.Textarea(attrs={
             'placeholder': 'Paste the job description here...',
             'rows': 6,
