@@ -1,0 +1,48 @@
+﻿{% extends 'navbar.html' %}
+{% block title %}Referral Hub{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-4">
+    <div class="mb-10 text-center">
+        <h1 class="text-4xl font-bold text-gray-900">Referral Hub</h1>
+        <p class="text-gray-500 mt-2">Track your sent requests and draft AI-powered referral messages.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="border-b border-gray-100 bg-gray-50 px-6 py-4">
+            <h2 class="text-lg font-bold text-gray-900">Sent Referrals</h2>
+        </div>
+        <div class="divide-y divide-gray-100">
+            {% for req in sent_referrals %}
+            <div class="p-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-900">{{ req.job.name }}</h3>
+                    <p class="text-gray-500">at <span class="font-medium text-indigo-600">{{ req.job.company }}</span> • Sent to {{ req.employee_name }}</p>
+                    <div class="mt-3 text-sm text-gray-600 bg-gray-50 rounded-lg p-3 italic">
+                        "{{ req.message }}"
+                    </div>
+                </div>
+                <div class="shrink-0">
+                    {% if req.status == 'accepted' %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800">
+                        Accepted
+                    </span>
+                    {% elif req.status == 'rejected' %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rose-100 text-rose-800">
+                        Rejected
+                    </span>
+                    {% else %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800">
+                        Pending
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-8 text-center text-gray-500">
+                You haven't sent any referral requests yet. Head over to Job Matches to request one!
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

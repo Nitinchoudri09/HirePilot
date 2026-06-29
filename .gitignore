@@ -39,4 +39,11 @@ media/
 *.swp
 *.swo
 .DS_Store
-Thumbs.db
+# ── Node / Next.js ────────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+refera/frontend/.env.local
+refera/backend/.env
+refera/backend/uploads/
+refera/backend/venv/
