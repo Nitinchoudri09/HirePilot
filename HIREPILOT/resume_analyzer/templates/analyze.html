@@ -3,98 +3,219 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Resume Analyzer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <title>AI Resume Analyzer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --info: #0ea5e9;
+            --info-bg: #e0f2fe;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
             padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
         }
         .container {
-            max-width: 650px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            position: relative;
+            max-width: 1100px;
+            margin: 0 auto;
         }
+        .nav-links {
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .nav-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+        
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 16px;
+            margin-bottom: 32px;
         }
-        h1 {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-            font-size: 2rem;
-            margin: 0;
-            color: #1e3a8a;
-        }
+        h1 { font-size: 2.25rem; font-weight: 700; color: #1e293b; letter-spacing: -0.02em; }
+        
         .credits-badge {
             background: #dbeafe;
             color: #1d4ed8;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 0.95rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
         }
+        @media (max-width: 850px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .form-card { grid-column: 1 / -1; }
         .form-input {
             width: 100%;
-            padding: 14px;
-            font-size: 1rem;
-            border: 1px solid #cbd5e1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
             border-radius: 10px;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            margin-bottom: 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
             background: #f8fafc;
         }
         .form-input:focus {
-            border-color: #3b82f6;
-            background: #ffffff;
             outline: none;
+            border-color: var(--primary);
+            background: #fff;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
         button[type="submit"] {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 14px 28px;
             border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
+            font-size: 1rem;
         }
         button[type="submit"]:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
-        h2 { color: #1e40af; margin-top: 32px; font-weight: 700; }
-        h3 { color: #334155; margin-top: 24px; font-weight: 600; }
-        ul { padding-left: 20px; color: #475569; line-height: 1.6; }
-        li { margin-bottom: 8px; }
-        
-        /* Popup Styles */
+
+        /* Score Styles */
+        .score-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: conic-gradient(var(--primary) calc(var(--score) * 1%), var(--border) 0);
+            margin-bottom: 16px;
+        }
+        .score-circle::before {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            background: var(--surface);
+            border-radius: 50%;
+        }
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: baseline;
+        }
+        .score-value span { font-size: 1.25rem; color: var(--text-muted); margin-left: 2px; }
+
+        /* Progress Bars */
+        .breakdown-list { display: flex; flex-direction: column; gap: 16px; }
+        .breakdown-item { display: flex; flex-direction: column; gap: 6px; }
+        .breakdown-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--primary);
+        }
+        .bg-green { background: var(--success); }
+        .bg-orange { background: #f59e0b; }
+        .bg-red { background: var(--danger); }
+
+        /* Skills Chips */
+        .skills-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+        .skill-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .skill-matched { background: var(--success-bg); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .skill-missing { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .skill-recommended { background: var(--info-bg); color: #0284c7; border: 1px solid rgba(14, 165, 233, 0.2); }
+
+        /* Insight Lists */
+        .insight-list { list-style: none; padding: 0; }
+        .insight-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+        .insight-list li:last-child { border-bottom: none; }
+        .icon { font-size: 1.1rem; line-height: 1.4; }
+
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -111,46 +232,23 @@
             border-radius: 16px;
             max-width: 450px;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: slideUp 0.3s ease-out forwards;
         }
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal h2 { margin-top: 0; color: #ef4444; }
-        .modal p { color: #475569; margin: 16px 0 24px; line-height: 1.5; }
         .btn-upgrade {
-            background: #10b981;
+            background: var(--success);
             color: white;
             text-decoration: none;
-            padding: 14px 28px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 8px;
             font-weight: 600;
             display: inline-block;
-            transition: all 0.2s;
         }
-        .btn-upgrade:hover { background: #059669; }
         .btn-close {
             background: transparent;
-            color: #64748b;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 500;
-            margin-left: 12px;
+            border-radius: 8px;
             cursor: pointer;
-        }
-        .nav-links {
-            margin-bottom: 20px;
-        }
-        .nav-links a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .nav-links a:hover {
-            text-decoration: underline;
+            margin-left: 8px;
         }
     </style>
 </head>
@@ -159,8 +257,8 @@
     {% if show_upgrade_popup %}
     <div class="modal-overlay" id="upgradeModal">
         <div class="modal">
-            <h2>Out of Credits!</h2>
-            <p>You have exhausted your resume analysis limit. Upgrade your plan to continue unlocking ATS insights and getting hired faster.</p>
+            <h2 style="color:var(--danger); margin-bottom:16px;">Out of Credits!</h2>
+            <p style="margin-bottom: 24px; color:var(--text-muted);">You have exhausted your resume analysis limit. Upgrade your plan to continue unlocking ATS insights and getting hired faster.</p>
             <div>
                 <a href="{% url 'pricing_page' %}" class="btn-upgrade">View Plans</a>
                 <button class="btn-close" onclick="document.getElementById('upgradeModal').style.display='none'">Close</button>
@@ -171,47 +269,153 @@
 
     <div class="container">
         <div class="nav-links">
-            <a href="{% url 'dashboard' %}">&larr; Back to Dashboard</a> |
+            <a href="{% url 'dashboard' %}">&larr; Back to Dashboard</a> &nbsp;|&nbsp;
             <a href="{% url 'subscription_dashboard' %}">My Subscription</a>
         </div>
         
         <div class="header">
-            <h1>ATS Analyzer</h1>
+            <h1>AI Resume Analyzer</h1>
             <div class="credits-badge">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <span>⚡</span>
                 {{ subscription.credits_remaining|default:"0" }} Credits Left
             </div>
         </div>
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Analyze Resume</button>
-        </form>
+        <div class="dashboard-grid">
+            <!-- Form Section -->
+            <div class="card form-card">
+                <h2>Upload Resume for Analysis</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:250px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:500; font-size:0.9rem;">Target Job Title</label>
+                            {{ form.job_title }}
+                        </div>
+                        <div style="flex:1; min-width:250px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:500; font-size:0.9rem;">Upload Resume (PDF/DOCX)</label>
+                            {{ form.resume }}
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;">
+                        <label style="display:block; margin-bottom:8px; font-weight:500; font-size:0.9rem;">Job Description (Optional if title is precise)</label>
+                        {{ form.job_description }}
+                    </div>
+                    <button type="submit" style="margin-top:16px;">Generate AI Report</button>
+                </form>
+            </div>
 
-        {% if score is not None %}
-            <h2>ATS Match Score: {{ score }}%</h2>
-            
-            {% if missing_words %}
-                <h3>Missing Keywords</h3>
-                <p style="color:#ef4444; font-size:0.95rem;">Consider adding these keywords to your resume if you have the experience:</p>
-                <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                    {% for word in missing_words|slice:":15" %}
-                        <span style="background:#fee2e2; color:#b91c1c; padding:4px 10px; border-radius:6px; font-size:0.85rem;">{{ word }}</span>
+            {% if analysis_data %}
+            <!-- Overall Score Section -->
+            <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+                <h2>Overall Match Score</h2>
+                <div class="score-container">
+                    <div class="score-circle" style="--score: {{ analysis_data.overall_match }};">
+                        <div class="score-value">{{ analysis_data.overall_match }}<span>%</span></div>
+                    </div>
+                    <p style="color:var(--text-muted); font-weight:500; text-align:center; margin-top:8px;">
+                        {% if analysis_data.overall_match >= 80 %}Excellent Match{% elif analysis_data.overall_match >= 60 %}Good Match{% else %}Needs Improvement{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Score Breakdown -->
+            <div class="card">
+                <h2>Score Breakdown</h2>
+                <div class="breakdown-list">
+                    {% for key, value in analysis_data.breakdown.items %}
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">
+                            <span>{{ key }}</span>
+                            <span>{{ value }}%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill {% if value >= 80 %}bg-green{% elif value >= 50 %}bg-orange{% else %}bg-red{% endif %}" style="width: {{ value }}%;"></div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
-            {% endif %}
+            </div>
 
-            {% if suggestions %}
-                <h3>Suggestions to Improve:</h3>
-                <ul>
-                    {% for advice in suggestions %}
-                        <li>{{ advice }}</li>
+            <!-- Skills Analysis -->
+            <div class="card form-card">
+                <h2>Skills Analysis</h2>
+                
+                <h4 style="margin-bottom:10px; color:var(--text-main); font-size:0.95rem;">Matched Skills</h4>
+                <div class="skills-container">
+                    {% for skill in analysis_data.skills_analysis.matched %}
+                        <span class="skill-chip skill-matched">✔ {{ skill }}</span>
+                    {% empty %}
+                        <span style="color:var(--text-muted); font-size:0.9rem;">No matching skills found.</span>
                     {% endfor %}
-                </ul>
+                </div>
+
+                <h4 style="margin-bottom:10px; color:var(--text-main); font-size:0.95rem;">Missing Skills (Required for role)</h4>
+                <div class="skills-container">
+                    {% for skill in analysis_data.skills_analysis.missing %}
+                        <span class="skill-chip skill-missing">✖ {{ skill }}</span>
+                    {% empty %}
+                        <span style="color:var(--text-muted); font-size:0.9rem;">You have all the key skills!</span>
+                    {% endfor %}
+                </div>
+                
+                {% if analysis_data.skills_analysis.recommended %}
+                <h4 style="margin-bottom:10px; color:var(--text-main); font-size:0.95rem;">Recommended to Add</h4>
+                <div class="skills-container" style="margin-bottom:0;">
+                    {% for skill in analysis_data.skills_analysis.recommended %}
+                        <span class="skill-chip skill-recommended">💡 {{ skill }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Insights (Strengths, Weaknesses, Suggestions) -->
+            <div class="card form-card" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+                
+                <div>
+                    <h3 style="color:var(--success); font-size:1.1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <span>⭐</span> Strengths
+                    </h3>
+                    <ul class="insight-list">
+                        {% for item in analysis_data.strengths %}
+                            <li><span class="icon icon-success">✔</span> <span>{{ item }}</span></li>
+                        {% empty %}
+                            <li><span style="color:var(--text-muted);">No prominent strengths identified.</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="color:var(--danger); font-size:1.1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <span>⚠️</span> Areas for Improvement
+                    </h3>
+                    <ul class="insight-list">
+                        {% for item in analysis_data.weaknesses %}
+                            <li><span class="icon icon-danger">✖</span> <span>{{ item }}</span></li>
+                        {% empty %}
+                            <li><span style="color:var(--text-muted);">No major weaknesses identified.</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="color:var(--primary); font-size:1.1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <span>💡</span> AI Suggestions
+                    </h3>
+                    <ul class="insight-list">
+                        {% for item in analysis_data.suggestions %}
+                            <li><span class="icon icon-info">➔</span> <span>{{ item }}</span></li>
+                        {% empty %}
+                            <li><span style="color:var(--text-muted);">No specific suggestions.</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
             {% endif %}
-        {% endif %}
+        </div>
     </div>
 
 </body>
 </html>
+

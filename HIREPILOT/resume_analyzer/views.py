@@ -14,7 +14,7 @@ from datetime import timedelta
 
 from .forms import ResumeForm
 from .utils import extract_text
-from .ai import calculate_similarity, missing_keywords, generate_suggestions
+from .ai import analyze_resume_with_ai
 from .models import SubscriptionPlan, UserSubscription, Payment, ResumeAnalysisHistory
 from .utils_email import send_payment_confirmation, send_low_credits_warning
 
@@ -33,7 +33,7 @@ def get_or_create_subscription(user):
     """Return the user's subscription, creating a blank one if missing."""
     sub, _ = UserSubscription.objects.get_or_create(
         user=user,
-        defaults={'credits_remaining': 0, 'status': 'active'},
+        defaults={'credits_remaining': 2, 'status': 'active'},
     )
     return sub
 
@@ -193,9 +193,7 @@ def subscription_dashboard(request):
 @login_required
 def analyze_resume(request):
     subscription = get_or_create_subscription(request.user)
-    score        = None
-    suggestions  = []
-    missing_words = []
+    analysis_data = None
     show_upgrade_popup = False
 
     if request.method == 'POST':
@@ -212,13 +210,22 @@ def analyze_resume(request):
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
             resume_file = request.FILES['resume']
-            job_desc    = form.cleaned_data['job_description']
+            job_desc    = form.cleaned_data.get('job_description', '')
             job_title   = form.cleaned_data.get('job_title', '')
             resume_text = extract_text(resume_file)
 
-            score         = calculate_similarity(resume_text, job_desc)
-            missing_words = missing_keywords(resume_text, job_desc)
-            suggestions   = generate_suggestions(missing_words)
+            analysis_data = analyze_resume_with_ai(resume_text, job_desc, job_title)
+            
+            if analysis_data and "breakdown" in analysis_data:
+                formatted_breakdown = {}
+                for k, v in analysis_data["breakdown"].items():
+                    formatted_key = str(k).replace("_", " ").title()
+                    formatted_breakdown[formatted_key] = v
+                analysis_data["breakdown"] = formatted_breakdown
+
+            score         = analysis_data.get("overall_match", 0)
+            missing_words = analysis_data.get("skills_analysis", {}).get("missing", [])
+            suggestions   = analysis_data.get("suggestions", [])
 
             # Deduct 1 credit
             subscription.credits_remaining = max(0, subscription.credits_remaining - 1)
@@ -231,6 +238,7 @@ def analyze_resume(request):
                 ats_score=score,
                 missing_keywords=missing_words[:20],
                 suggestions=suggestions,
+                detailed_report=analysis_data
             )
 
             # Low credits warning email (send when exactly 1 remains)
@@ -241,9 +249,7 @@ def analyze_resume(request):
 
     return render(request, 'analyze.html', {
         'form':         form,
-        'score':        score,
-        'suggestions':  suggestions,
-        'missing_words': missing_words,
+        'analysis_data': analysis_data,
         'subscription': subscription,
         'show_upgrade_popup': show_upgrade_popup,
     })

@@ -12,4 +12,6 @@ urlpatterns = [
     path('ai/summary/', views.ai_suggest_summary, name='ai_summary'),
     path('ai/keywords/', views.ai_suggest_keywords, name='ai_keywords'),
     path('delete/<int:resume_id>/', views.delete_resume, name='delete_resume'),
+    path('create-order/', views.create_razorpay_order, name='create_razorpay_order'),
+    path('payment-callback/', views.payment_callback, name='payment_callback'),
 ]
