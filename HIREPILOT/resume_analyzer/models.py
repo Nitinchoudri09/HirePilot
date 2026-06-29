@@ -101,6 +101,7 @@ class ResumeAnalysisHistory(models.Model):
     ats_score  = models.FloatField()
     missing_keywords = models.JSONField(default=list)
     suggestions      = models.JSONField(default=list)
+    detailed_report  = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
