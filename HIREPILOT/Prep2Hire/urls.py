@@ -12,6 +12,7 @@ urlpatterns = [
     path('resume-analyzer/', include('resume_analyzer.urls')),
     path("coding/", include("judge.urls")),
     path('resumes/', include('resume_builder.urls')),
+    path('referrals/', include('referrals.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

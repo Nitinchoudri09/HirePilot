@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Referral - HirePilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #050508; color: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: rgba(20,20,30,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px; max-width: 600px; width: 100%; backdrop-filter: blur(12px); }
+    h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    .subtitle { color: #94a3b8; margin-bottom: 30px; }
+    .employee-card { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+    .employee-card h3 { color: #60a5fa; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; color: #94a3b8; font-weight: 500; }
+    input[type=file], textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #f8fafc; font-size: 1rem; }
+    textarea { resize: vertical; }
+    .btn { background: #3b82f6; color: white; border: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; }
+    .btn:hover { background: #2563eb; }
+    .back-link { display: block; text-align: center; margin-top: 16px; color: #94a3b8; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Request Referral</h1>
+    <p class="subtitle">Send a referral request to {{ employee.display_name }}</p>
+    
+    <div class="employee-card">
+      <h3>{{ employee.display_name }}</h3>
+      <p>{{ employee.job_title }} at {{ employee.company }}</p>
+      <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 4px;">{{ employee.department }}</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Upload Your Resume (PDF or DOCX)</label>
+        {{ form.resume }}
+      </div>
+      <div class="form-group">
+        <label>Cover Note (Optional)</label>
+        {{ form.note }}
+      </div>
+      <button type="submit" class="btn">Send Referral Request</button>
+    </form>
+    <a href="{% url 'referral_marketplace' %}" class="back-link">← Back to Marketplace</a>
+  </div>
+</body>
+</html>

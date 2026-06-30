@@ -440,6 +440,7 @@
                 <div class="dropdown" id="dropdownMenu" style="margin-left: 10px;">
                   <span class="dropdown-trigger btn" onclick="toggleDropdown()" style="background: transparent; color: #2563eb; border: 2.5px solid #2563eb; border-radius: 50px; padding: 14px 30px; font-weight: 700; font-size: 1.2rem; cursor: pointer; white-space: nowrap; display: inline-block;">Welcome, {{ user.username }}</span>
                     <div class="dropdown-content" style="top: 50px;">
+                      <a href="{% url 'profile_settings' %}">Account Settings</a>
                       <a href="{% url 'change_password' %}">Change Password</a>
                       <a href="#" onclick="showLogoutModal(event)">Logout</a>
                       <form action="{% url 'delete_account' %}" method="post" style="margin: 0; padding: 5px 15px;">

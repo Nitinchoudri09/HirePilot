@@ -454,3 +454,59 @@ def dashboard(request):
         'recent_activity': recent_activity,
     }
     return render(request, 'dashboard.html', context)
+
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .forms import UserUpdateForm, ProfileUpdateForm, UserTaskForm
+from jobs.models import Profile
+
+@login_required
+def profile_settings_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile_settings')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=profile)
+
+    tasks = request.user.tasks.all().order_by('-created_at')
+    task_form = UserTaskForm()
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'tasks': tasks,
+        'task_form': task_form
+    }
+    return render(request, 'profile_settings.html', context)
+
+@login_required
+def add_task(request):
+    if request.method == 'POST':
+        form = UserTaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+    return redirect('profile_settings')
+
+@login_required
+def toggle_task(request, task_id):
+    from .models import UserTask
+    task = get_object_or_404(UserTask, id=task_id, user=request.user)
+    task.is_completed = not task.is_completed
+    task.save()
+    return redirect('profile_settings')
+
+@login_required
+def delete_task(request, task_id):
+    from .models import UserTask
+    task = get_object_or_404(UserTask, id=task_id, user=request.user)
+    task.delete()
+    return redirect('profile_settings')

@@ -4,6 +4,7 @@ from django.db import models
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     desired_role = models.CharField(max_length=100)
+    profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
 
 
 class Job(models.Model):
@@ -32,21 +33,5 @@ class JobMatch(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.job.name} ({self.eligibility_score}%)"
 
-class ReferralRequest(models.Model):
-    STATUS_CHOICES = (
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
-    )
-    candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_referrals")
-    employee_name = models.CharField(max_length=255, default="Company Employee") # Mock employee for demo
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    message = models.TextField(blank=True, null=True)
-    ai_generated_message = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"Referral for {self.candidate.username} - {self.job.name}"
 

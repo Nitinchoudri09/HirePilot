@@ -72,24 +72,5 @@ def job_matches(request):
 
 @login_required
 def referrals(request):
-    from .models import ReferralRequest
-    
-    if request.method == 'POST':
-        job_id = request.POST.get('job_id')
-        if job_id:
-            job = Job.objects.get(id=job_id)
-            from .ai_services import mock_generate_referral_message
-            ai_msg = mock_generate_referral_message(request.user.username, job.name, ['Python', 'Django'])
-            ReferralRequest.objects.create(
-                candidate=request.user,
-                job=job,
-                message=ai_msg,
-                ai_generated_message=ai_msg
-            )
-            return redirect('referrals')
-
-    sent_referrals = ReferralRequest.objects.filter(candidate=request.user)
-    # Also fetch some dummy jobs for the dropdown
-    jobs = Job.objects.all()[:5]
-    context = {'sent_referrals': sent_referrals, 'jobs': jobs}
-    return render(request, 'jobs/referrals.html', context)
+    """Redirects to the new referrals marketplace."""
+    return redirect('referral_marketplace')

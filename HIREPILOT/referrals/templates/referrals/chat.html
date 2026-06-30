@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Chat - HirePilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    :root {
+      --bg-color: #050508;
+      --sidebar-width: 260px;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.5);
+      --secondary: #8b5cf6;
+      --text-dark: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(20, 20, 30, 0.6);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --hover-bg: rgba(255, 255, 255, 0.05);
+      --sidebar-bg: rgba(10, 10, 15, 0.7);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-dark); display: flex; min-height: 100vh; overflow-x: hidden; }
+    
+    /* Ambient Background Orbs */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+      animation: float 20s infinite alternate;
+    }
+    .orb-1 { top: -100px; left: -100px; width: 400px; height: 400px; background: rgba(59, 130, 246, 0.3); }
+    .orb-2 { bottom: -150px; right: -100px; width: 500px; height: 500px; background: rgba(139, 92, 246, 0.3); animation-delay: -5s; }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 50px) scale(1.1); }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+    .logo-container {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-container span {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .nav-links {
+      flex: 1;
+      padding: 20px 0;
+      list-style: none;
+    }
+    .nav-links li { margin-bottom: 5px; padding: 0 16px; }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Chat Layout */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 20px 25px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .chat-header h3 { font-size: 1.15rem; font-weight: 700; }
+    .chat-header p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .chat-messages {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .message-wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 70%;
+    }
+    .message-wrapper.sender {
+      align-self: flex-end;
+    }
+    .message-wrapper.recipient {
+      align-self: flex-start;
+    }
+    .message-bubble {
+      padding: 12px 18px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .sender .message-bubble {
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .recipient .message-bubble {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+      border-bottom-left-radius: 4px;
+    }
+    .message-meta {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+      display: flex;
+      gap: 8px;
+    }
+    .sender .message-meta { justify-content: flex-end; }
+
+    /* Input area */
+    .chat-input-area {
+      padding: 20px 25px;
+      border-top: 1px solid var(--border-color);
+      background: rgba(0,0,0,0.2);
+    }
+    .chat-form {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .chat-form textarea {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-dark);
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      outline: none;
+      resize: none;
+      height: 48px;
+      transition: all 0.3s;
+    }
+    .chat-form textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+    .btn-send {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-send:hover {
+      background: #2563eb;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo-container">
+      <span>HirePilot</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/"><i class='bx bx-home-alt'></i> Home</a></li>
+      <li><a href="/dashboard/"><i class='bx bx-grid-alt'></i> Dashboard</a></li>
+      <li><a href="/referrals/"><i class='bx bx-network-chart'></i> Referral Marketplace</a></li>
+      <li><a href="/referrals/track/"><i class='bx bx-trending-up'></i> Track Referrals</a></li>
+      <li><a href="/referrals/employee/dashboard/"><i class='bx bx-user-check'></i> Employee Dashboard</a></li>
+      <li><a href="/referrals/notifications/"><i class='bx bx-bell'></i> Notifications</a></li>
+      <li><a href="/profile/"><i class='bx bx-user'></i> Account Settings</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="chat-container">
+      <!-- Header -->
+      <div class="chat-header">
+        <a href="
+          {% if is_seeker %}
+            {% url 'track_referrals' %}
+          {% else %}
+            {% url 'employee_dashboard' %}
+          {% endif %}
+        " style="color: var(--text-muted); font-size: 1.4rem; margin-right: 10px; display: inline-flex; align-items: center;">
+          <i class='bx bx-arrow-back'></i>
+        </a>
+        <div>
+          <h3>{{ other_user.get_full_name|default:other_user.username }}</h3>
+          <p>
+            {% if is_seeker %}
+              Employee @ {{ referral.employee.company }}
+            {% else %}
+              Candidate (Job Seeker)
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="chat-messages" id="chat-messages-box">
+        {% for msg in chat_messages %}
+          <div class="message-wrapper {% if msg.sender == request.user %}sender{% else %}recipient{% endif %}">
+            <div class="message-bubble">
+              {{ msg.body }}
+            </div>
+            <div class="message-meta">
+              <span>{{ msg.sender.username }}</span>
+              <span>{{ msg.sent_at|date:"H:i" }}</span>
+            </div>
+          </div>
+        {% empty %}
+          <p style="text-align: center; color: var(--text-muted); margin: auto;">No messages yet. Send a greeting to start the conversation!</p>
+        {% endfor %}
+      </div>
+
+      <!-- Input Form -->
+      <div class="chat-input-area">
+        <form method="post" class="chat-form" id="chat-form">
+          {% csrf_token %}
+          <textarea name="body" id="chat-message-input" placeholder="Type a message..." required></textarea>
+          <button type="submit" class="btn-send"><i class='bx bx-send'></i></button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Auto scroll chat box to the bottom
+    const chatBox = document.getElementById('chat-messages-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Handle Enter to submit (without shift)
+    const textarea = document.getElementById('chat-message-input');
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('chat-form').submit();
+      }
+    });
+  </script>
+</body>
+</html>

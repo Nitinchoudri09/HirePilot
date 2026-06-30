@@ -17,3 +17,25 @@ class SignupForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
+
+class UserUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
+
+from jobs.models import Profile
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('profile_picture',)
+
+from .models import UserTask
+
+class UserTaskForm(forms.ModelForm):
+    class Meta:
+        model = UserTask
+        fields = ('title',)

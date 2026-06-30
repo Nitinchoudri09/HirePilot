@@ -38,4 +38,9 @@ urlpatterns = [
     path('password-reset-complete/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), 
          name='password_reset_complete'),
+    
+    path('profile/', views.profile_settings_view, name='profile_settings'),
+    path('profile/add-task/', views.add_task, name='add_task'),
+    path('profile/toggle-task/<int:task_id>/', views.toggle_task, name='toggle_task'),
+    path('profile/delete-task/<int:task_id>/', views.delete_task, name='delete_task'),
 ]

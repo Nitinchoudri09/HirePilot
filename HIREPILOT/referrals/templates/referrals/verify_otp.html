@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Work Email - HirePilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    :root {
+      --bg-color: #050508;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.5);
+      --secondary: #8b5cf6;
+      --text-dark: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(20, 20, 30, 0.6);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --input-bg: rgba(255, 255, 255, 0.05);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    /* Ambient Background Orbs */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+      animation: float 20s infinite alternate;
+    }
+    .orb-1 { top: -100px; left: -100px; width: 400px; height: 400px; background: rgba(59, 130, 246, 0.3); }
+    .orb-2 { bottom: -150px; right: -100px; width: 500px; height: 500px; background: rgba(139, 92, 246, 0.3); animation-delay: -5s; }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 50px) scale(1.1); }
+    }
+
+    .glass-panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--glass-shadow);
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .lock-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--primary);
+      margin: 0 auto 25px;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
+
+    /* Steps */
+    .steps-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 35px;
+      position: relative;
+    }
+    .steps-container::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+    .step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 33.33%;
+    }
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1e1e2f;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+    .step.active .step-number {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .step.completed .step-number {
+      background: #10b981;
+      border-color: #10b981;
+      color: white;
+    }
+    .step-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+    .step.active .step-label { color: var(--text-dark); }
+
+    /* OTP Code Boxes */
+    .otp-inputs {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .otp-box {
+      width: 50px;
+      height: 60px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-dark);
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .otp-box:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+    }
+    .btn-submit:hover {
+      box-shadow: 0 4px 20px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+    .resend-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+    .resend-link:hover { color: var(--primary); }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <div class="glass-panel">
+    <!-- Step Progress -->
+    <div class="steps-container">
+      <div class="step completed">
+        <div class="step-number"><i class='bx bx-check'></i></div>
+        <div class="step-label">Fill Details</div>
+      </div>
+      <div class="step active">
+        <div class="step-number">2</div>
+        <div class="step-label">Verify Email</div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-label">Start Helping</div>
+      </div>
+    </div>
+
+    <div class="lock-icon">
+      <i class='bx bx-mail-send'></i>
+    </div>
+
+    <h2>Verify Your Work Email</h2>
+    <p class="subtitle">We sent a 6-digit verification code to <strong style="color: var(--primary);">{{ work_email }}</strong></p>
+
+    <!-- Django Messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" id="otp-form">
+      {% csrf_token %}
+      
+      <!-- Combined OTP fields into 6 boxes -->
+      <div class="otp-inputs">
+        <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required autofocus>
+        <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+        <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+        <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+        <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+        <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+      </div>
+
+      <!-- Hidden field for actual POST payload -->
+      <input type="hidden" name="otp" id="id_otp">
+
+      <button type="submit" class="btn-submit">Verify & Complete</button>
+    </form>
+
+    <a href="{% url 'resend_otp' %}" class="resend-link">Didn't receive the email? Resend code</a>
+    <div style="margin-top: 15px;">
+      <a href="{% url 'employee_signup' %}" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">Change email address</a>
+    </div>
+  </div>
+
+  <script>
+    // Auto-focus progression for OTP inputs
+    const inputs = document.querySelectorAll('.otp-inputs input');
+    const hiddenOtp = document.getElementById('id_otp');
+    const form = document.getElementById('otp-form');
+
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+        
+        // Assemble final code
+        updateOtpString();
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    function updateOtpString() {
+      let code = '';
+      inputs.forEach(input => {
+        code += input.value;
+      });
+      hiddenOtp.value = code;
+    }
+
+    form.addEventListener('submit', (e) => {
+      updateOtpString();
+      if (hiddenOtp.value.length !== 6) {
+        e.preventDefault();
+        alert('Please enter all 6 digits of the verification code.');
+      }
+    });
+  </script>
+</body>
+</html>
