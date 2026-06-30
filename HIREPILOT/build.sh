@@ -17,9 +17,10 @@ python manage.py collectstatic --noinput
 echo "==> Running database migrations..."
 python manage.py migrate
 
-echo "==> Populating database with default data (Quizzes, Coding Problems, Career Paths)..."
+echo "==> Populating database with default data (Quizzes, Coding Problems, Career Paths, Plans)..."
 python populate_quizzes.py
 python populate_problems.py
 python populate_career.py
+python populate_plans.py
 
 echo "==> Build complete."
