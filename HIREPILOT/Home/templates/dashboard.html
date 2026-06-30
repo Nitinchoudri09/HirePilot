@@ -182,7 +182,36 @@
     .view-all i { font-size: 18px; }
 
     /* Hamburger Menu Toggle */
-    .menu-toggle { display: none; font-size: 28px; color: var(--text-dark); cursor: pointer; }
+    .menu-toggle { display: none; font-size: 28px; color: var(--text-dark); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+    /* Mobile top bar */
+    .mobile-top-bar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 101;
+    }
+    .mobile-top-bar .mobile-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--text-dark); }
+    .mobile-top-bar .mobile-logo img { width: 30px; height: 30px; object-fit: contain; }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 99;
+      backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.active { display: block; }
 
     /* Notification Dropdown Panel */
     .notif-dropdown { position: absolute; top: 60px; right: 0; background: var(--dropdown-bg); backdrop-filter: blur(20px); width: 340px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid var(--border-color); z-index: 200; display: none; flex-direction: column; opacity: 0; transform: translateY(-10px); transition: opacity 0.2s, transform 0.2s; }
@@ -232,19 +261,60 @@
     }
 
     @media (max-width: 768px) {
-      .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .mobile-top-bar { display: flex; }
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        z-index: 100;
+      }
       .sidebar.active { transform: translateX(0); }
-      .main-content { margin-left: 0; padding: 20px; width: 100%; }
+      .main-content { margin-left: 0; padding: 80px 16px 20px; width: 100%; }
       .menu-toggle { display: block; }
-      .header { flex-direction: column; gap: 20px; }
-      .header-right { width: 100%; justify-content: space-between; }
-      .search-bar { flex: 1; max-width: none; margin-right: 15px; }
-      .stats-grid { grid-template-columns: 1fr; }
+      .header { flex-direction: column; gap: 16px; align-items: flex-start; }
+      .header-text h1 { font-size: 1.6rem; }
+      .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+      .search-bar { flex: 1; min-width: 0; max-width: none; width: 100%; padding: 10px 16px; }
+      .search-bar input { font-size: 0.9rem; }
       .notif-dropdown { right: -50px; width: 300px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .stat-card { padding: 16px; gap: 12px; }
+      .stat-icon { width: 48px; height: 48px; font-size: 22px; }
+      .stat-info h3 { font-size: 1.4rem; }
+      .feature-card { flex-direction: column; gap: 14px; align-items: flex-start; }
+      .feature-card > div:last-child { align-self: flex-end; }
+    }
+
+    @media (max-width: 480px) {
+      .main-content { padding: 72px 12px 20px; }
+      .stats-grid { grid-template-columns: 1fr; gap: 10px; }
+      .header-text h1 { font-size: 1.3rem; }
+      .header-text p { font-size: 0.85rem; }
+      .panel { padding: 20px 16px; }
+      .todo-right { flex-direction: column; gap: 4px; align-items: flex-end; }
+      .notif-dropdown { right: -80px; width: 280px; }
+      .profile-name span:not(.bx) { display: none; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Mobile Top Bar -->
+  <div class="mobile-top-bar">
+    <div class="mobile-logo">
+      {% load static %}
+      <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="Logo">
+      <span style="font-family:'League Spartan',sans-serif;">HirePilot</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div class="notif-btn theme-toggle-btn" onclick="toggleTheme()" style="width:38px;height:38px;font-size:20px;">
+        <i class='bx bx-moon' id="mobileThemeIcon"></i>
+      </div>
+      <i class='bx bx-menu menu-toggle' id="menu-toggle" style="font-size:26px;"></i>
+    </div>
+  </div>
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
@@ -579,10 +649,40 @@
       // Sidebar Toggle
       const menuToggle = document.getElementById("menu-toggle");
       const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
       
+      function openSidebar() {
+        sidebar.classList.add("active");
+        sidebarOverlay.classList.add("active");
+      }
+      function closeSidebar() {
+        sidebar.classList.remove("active");
+        sidebarOverlay.classList.remove("active");
+      }
+
       menuToggle.addEventListener("click", function() {
-        sidebar.classList.toggle("active");
+        if (sidebar.classList.contains("active")) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
       });
+
+      sidebarOverlay.addEventListener("click", closeSidebar);
+
+      // Close sidebar when a nav link is tapped on mobile
+      sidebar.querySelectorAll('.nav-links li a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth <= 768) closeSidebar();
+        });
+      });
+
+      // Sync mobile theme icon with current theme
+      const mobileThemeIcon = document.getElementById('mobileThemeIcon');
+      if (mobileThemeIcon) {
+        const t = localStorage.getItem('theme') || 'dark';
+        mobileThemeIcon.className = t === 'light' ? 'bx bx-sun' : 'bx bx-moon';
+      }
 
       // Notification Dropdown Toggle
       const notifBtn = document.getElementById("notif-btn");
@@ -606,10 +706,6 @@
       markReadBtn.addEventListener("click", function(e) {
         e.stopPropagation(); // prevent dropdown from toggling
         notifBadge.style.display = "none";
-        
-        // Optional: clear notification items visually
-        // const notifBody = document.querySelector('.notif-body');
-        // notifBody.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">No new notifications</div>';
       });
     });
   </script>

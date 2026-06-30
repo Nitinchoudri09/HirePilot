@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HirePilot - Master Skills, Land Your Dream Job</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1c1d1f;
+            background-color: #fff;
+        }
+
+        /* Header Styles */
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            height: 72px;
+        }
+
+        .logo {
+            font-size: 34px;
+            font-weight: bold;
+            color: #a435f0;
+            text-decoration: none;
+            margin-right: 32px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-right: auto;
+        }
+
+        .nav-item {
+            color: #1c1d1f;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item:hover {
+            color: #a435f0;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 750px;
+            margin: 0 24px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #1c1d1f;
+            border-radius: 50px;
+            padding: 0 48px 0 48px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-box:focus {
+            border-color: #a435f0;
+            box-shadow: 0 0 0 2px rgba(164, 53, 240, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6a6f73;
+            font-size: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-outline {
+            border: 1px solid #1c1d1f;
+            color: #1c1d1f;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: #1c1d1f;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: #a435f0;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #8710d8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 64px 0;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+
+        .hero-search {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-search input {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 4px;
+            padding: 0 120px 0 20px;
+            font-size: 18px;
+            outline: none;
+        }
+
+        .hero-search button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            height: 40px;
+            padding: 0 24px;
+            background: #a435f0;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Learning Paths Section */
+        .learning-paths {
+            padding: 64px 0;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+        }
+
+        .container {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #6a6f73;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .paths-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .path-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .path-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            border-color: #a435f0;
+        }
+
+        .path-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .path-icon {
+            font-size: 48px;
+            margin-right: 16px;
+        }
+
+        .path-info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1d1f;
+            margin-bottom: 4px;
+        }
+
+        .path-duration {
+            color: #6a6f73;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .path-description {
+            color: #4a5568;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .path-courses {
+            margin-bottom: 24px;
+        }
+
+        .path-courses h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2d3748;
+        }
+
+        .course-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .course-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .course-list li:last-child {
+            border-bottom: none;
+        }
+
+        .course-list li::before {
+            content: "📚";
+            margin-right: 8px;
+        }
+
+        .path-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #f7f9fa;
+            border-radius: 8px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #a435f0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6a6f73;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .start-path-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #a435f0 0%, #8710d8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .start-path-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(164, 53, 240, 0.3);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 64px 0;
+            background: #f7f9fa;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .category-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .category-count {
+            color: #6a6f73;
+            font-size: 14px;
+        }
+
+        /* Courses Section */
+        .courses-section {
+            padding: 64px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 16px;
+            border: 1px solid #d1d7dc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-content {
+            padding: 16px;
+        }
+
+        .course-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-instructor {
+            color: #6a6f73;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .rating-stars {
+            color: #f69c08;
+            font-size: 14px;
+        }
+
+        .rating-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f69c08;
+        }
+
+        .rating-count {
+            color: #6a6f73;
+            font-size: 12px;
+        }
+
+        .course-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .current-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1c1d1f;
+        }
+
+        .original-price {
+            font-size: 14px;
+            color: #6a6f73;
+            text-decoration: line-through;
+        }
+
+        .course-level {
+            display: inline-block;
+            background: #eceb98;
+            color: #3d3c0a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Loading and Error States */
+        .loading {
+            text-align: center;
+            padding: 64px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #a435f0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 64px 0;
+            color: #e74c3c;
+        }
+
+        /* Course Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 24px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            background: #f7f9fa;
+        }
+
+        .close {
+            position: absolute;
+            right: 24px;
+            top: 24px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6a6f73;
+            background: none;
+            border: none;
+        }
+
+        .close:hover {
+            color: #1c1d1f;
+        }
+
+        .course-details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+
+        .course-info h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6a6f73;
+            font-size: 14px;
+        }
+
+        .course-sidebar {
+            background: #f7f9fa;
+            padding: 24px;
+            border-radius: 8px;
+            height: fit-content;
+        }
+
+        .enroll-btn {
+            width: 100%;
+            padding: 16px;
+            background: #a435f0;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .enroll-btn:hover {
+            background: #8710d8;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 48px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #d1d7dc;
+            background: white;
+            color: #1c1d1f;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #f7f9fa;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: #a435f0;
+            color: white;
+            border-color: #a435f0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 16px;
+                height: 64px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .search-container {
+                margin: 0 16px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .paths-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 16px;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .course-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                justify-content: center;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">HirePilot</a>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item">Learning Paths</a>
+                <a href="#" class="nav-item">Categories</a>
+                <a href="#" class="nav-item">Career Resources</a>
+                <a href="#" class="nav-item">Success Stories</a>
+            </nav>
+
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-box" placeholder="Search courses, skills, or career paths" id="headerSearch">
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Master Skills, Land Your Dream Job</h1>
+            <p>Follow structured learning paths designed by industry experts to prepare you for high-demand careers.</p>
+            
+            <div class="hero-search">
+                <input type="text" placeholder="What career are you preparing for?" id="heroSearch">
+                <button onclick="searchCourses()">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Paths Section -->
+    <section class="learning-paths">
+        <div class="container">
+            <h2 class="section-title">Career-Focused Learning Paths</h2>
+            <p class="section-subtitle">Structured courses designed to prepare you for specific roles and help you land your dream job</p>
+            
+            <div class="paths-grid" id="learningPathsGrid">
+                <!-- Learning paths will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Explore by Category</h2>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Course Details Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="courseDetails"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="enroll-btn" onclick="enrollCourse()">Start Learning</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learning Path Modal -->
+    <div id="pathModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" onclick="closePathModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="pathDetails"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="enroll-btn" onclick="startLearningPath()">Start Learning Path</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const RAPIDAPI_KEY = "91554f044emsh0c23aa4864c3528p174c02jsn1449ae80e295";
+        const API_BASE_URL = "https://udemy-course-scrapper-api.p.rapidapi.com";
+
+        // Global variables
+        let allCourses = [];
+        let filteredCourses = [];
+        let currentPage = 1;
+        const coursesPerPage = 12;
+        let currentCourse = null;
+        let currentPath = null;
+
+        // Learning Paths Data
+        const learningPaths = [
+            {
+                id: 1,
+                title: "Full Stack Web Developer",
+                icon: "💻",
+                duration: "6-8 months",
+                description: "Master both frontend and backend development to become a versatile web developer ready for any tech company.",
+                courses: [
+                    "HTML, CSS & JavaScript Fundamentals",
+                    "React.js Complete Guide",
+                    "Node.js & Express Backend Development",
+                    "Database Design with MongoDB",
+                    "Full Stack Project Portfolio"
+                ],
+                totalCourses: 5,
+                totalHours: 120,
+                avgSalary: "$75,000",
+                jobOpenings: "50,000+",
+                skills: ["React", "Node.js", "JavaScript", "MongoDB", "HTML/CSS"],
+                careerOutcomes: [
+                    "Frontend Developer",
+                    "Backend Developer", 
+                    "Full Stack Developer",
+                    "Web Application Developer"
+                ]
+            },
+            {
+                id: 2,
+                title: "Data Scientist",
+                icon: "📊",
+                duration: "8-10 months",
+                description: "Learn data analysis, machine learning, and statistical modeling to extract insights from complex datasets.",
+                courses: [
+                    "Python for Data Science",
+                    "Statistics & Probability",
+                    "Machine Learning Algorithms",
+                    "Data Visualization with Tableau",
+                    "Real-world Data Science Projects"
+                ],
+                totalCourses: 5,
+                totalHours: 150,
+                avgSalary: "$95,000",
+                jobOpenings: "25,000+",
+                skills: ["Python", "Machine Learning", "Statistics", "SQL", "Tableau"],
+                careerOutcomes: [
+                    "Data Scientist",
+                    "Machine Learning Engineer",
+                    "Data Analyst",
+                    "Business Intelligence Analyst"
+                ]
+            },
+            {
+                id: 3,
+                title: "Digital Marketing Specialist",
+                icon: "📈",
+                duration: "4-6 months",
+                description: "Master digital marketing strategies including SEO, social media, and paid advertising to drive business growth.",
+                courses: [
+                    "Digital Marketing Fundamentals",
+                    "SEO & Content Marketing",
+                    "Social Media Marketing Strategy",
+                    "Google Ads & Facebook Advertising",
+                    "Marketing Analytics & ROI"
+                ],
+                totalCourses: 5,
+                totalHours: 80,
+                avgSalary: "$55,000",
+                jobOpenings: "40,000+",
+                skills: ["SEO", "Google Ads", "Social Media", "Analytics", "Content Marketing"],
+                careerOutcomes: [
+                    "Digital Marketing Manager",
+                    "SEO Specialist",
+                    "Social Media Manager",
+                    "PPC Specialist"
+                ]
+            },
+            {
+                id: 4,
+                title: "Cloud Solutions Architect",
+                icon: "☁️",
+                duration: "6-8 months",
+                description: "Design and implement scalable cloud infrastructure solutions using AWS, Azure, and modern DevOps practices.",
+                courses: [
+                    "Cloud Computing Fundamentals",
+                    "AWS Solutions Architecture",
+                    "Docker & Kubernetes",
+                    "Infrastructure as Code",
+                    "Cloud Security Best Practices"
+                ],
+                totalCourses: 5,
+                totalHours: 110,
+                avgSalary: "$120,000",
+                jobOpenings: "30,000+",
+                skills: ["AWS", "Docker", "Kubernetes", "Terraform", "Cloud Security"],
+                careerOutcomes: [
+                    "Cloud Architect",
+                    "DevOps Engineer",
+                    "Site Reliability Engineer",
+                    "Cloud Consultant"
+                ]
+            },
+            {
+                id: 5,
+                title: "UX/UI Designer",
+                icon: "🎨",
+                duration: "5-7 months",
+                description: "Create user-centered designs and intuitive interfaces that solve real problems and delight users.",
+                courses: [
+                    "Design Thinking & User Research",
+                    "Wireframing & Prototyping",
+                    "Visual Design Principles",
+                    "Figma & Adobe Creative Suite",
+                    "UX Portfolio Development"
+                ],
+                totalCourses: 5,
+                totalHours: 90,
+                avgSalary: "$70,000",
+                jobOpenings: "20,000+",
+                skills: ["Figma", "Adobe XD", "User Research", "Prototyping", "Visual Design"],
+                careerOutcomes: [
+                    "UX Designer",
+                    "UI Designer",
+                    "Product Designer",
+                    "Design Researcher"
+                ]
+            },
+            {
+                id: 6,
+                title: "Cybersecurity Analyst",
+                icon: "🔒",
+                duration: "7-9 months",
+                description: "Protect organizations from cyber threats through security analysis, incident response, and risk management.",
+                courses: [
+                    "Cybersecurity Fundamentals",
+                    "Network Security & Firewalls",
+                    "Ethical Hacking & Penetration Testing",
+                    "Incident Response & Forensics",
+                    "Security Compliance & Risk Management"
+                ],
+                totalCourses: 5,
+                totalHours: 130,
+                avgSalary: "$85,000",
+                jobOpenings: "35,000+",
+                skills: ["Network Security", "Penetration Testing", "SIEM", "Risk Assessment", "Compliance"],
+                careerOutcomes: [
+                    "Cybersecurity Analyst",
+                    "Security Engineer",
+                    "Penetration Tester",
+                    "Security Consultant"
+                ]
+            },
+            {
+                id: 7,
+                title: "Mobile App Developer",
+                icon: "📱",
+                duration: "5-7 months",
+                description: "Build robust and scalable mobile applications for iOS and Android platforms.",
+                courses: [
+                    "Mobile App Development Basics",
+                    "React Native & Flutter",
+                    "iOS Development with Swift",
+                    "Android Development with Kotlin",
+                    "Mobile UI/UX Principles"
+                ],
+                totalCourses: 5,
+                totalHours: 100,
+                avgSalary: "$90,000",
+                jobOpenings: "45,000+",
+                skills: ["React Native", "Flutter", "Swift", "Kotlin", "Mobile UI"],
+                careerOutcomes: [
+                    "Mobile App Developer",
+                    "iOS Developer",
+                    "Android Developer",
+                    "React Native Engineer"
+                ]
+            },
+            {
+                id: 8,
+                title: "Product Manager",
+                icon: "👔",
+                duration: "4-6 months",
+                description: "Learn to lead cross-functional teams and manage product lifecycles from ideation to launch.",
+                courses: [
+                    "Product Management Fundamentals",
+                    "Agile & Scrum Methodologies",
+                    "User Research & Data Analytics",
+                    "Product Strategy & Roadmapping",
+                    "Go-to-Market Strategy"
+                ],
+                totalCourses: 5,
+                totalHours: 85,
+                avgSalary: "$105,000",
+                jobOpenings: "30,000+",
+                skills: ["Agile", "Scrum", "Product Strategy", "Data Analytics", "Roadmapping"],
+                careerOutcomes: [
+                    "Product Manager",
+                    "Associate Product Manager",
+                    "Technical Product Manager",
+                    "Product Owner"
+                ]
+            },
+            {
+                id: 9,
+                title: "Artificial Intelligence Engineer",
+                icon: "🤖",
+                duration: "8-10 months",
+                description: "Develop AI models and deep learning applications to solve complex real-world problems.",
+                courses: [
+                    "Introduction to AI",
+                    "Deep Learning & Neural Networks",
+                    "Natural Language Processing (NLP)",
+                    "Computer Vision",
+                    "AI Model Deployment"
+                ],
+                totalCourses: 5,
+                totalHours: 140,
+                avgSalary: "$115,000",
+                jobOpenings: "40,000+",
+                skills: ["Deep Learning", "NLP", "Computer Vision", "TensorFlow", "PyTorch"],
+                careerOutcomes: [
+                    "AI Engineer",
+                    "Deep Learning Engineer",
+                    "NLP Scientist",
+                    "Machine Learning Researcher"
+                ]
+            }
+        ];
+
+        // Sample course data (fallback if API fails)
+        const sampleCourses = [
+            {
+                id: 1,
+                title: "The Complete JavaScript Course 2024: From Zero to Expert!",
+                instructor: "Jonas Schmedtmann",
+                price: 84.99,
+                originalPrice: 199.99,
+                rating: 4.7,
+                reviewCount: 178542,
+                image: "/placeholder.svg?height=180&width=300",
+                level: "Beginner",
+                category: "Development",
+                description: "The modern JavaScript course for everyone! Master JavaScript with projects, challenges and theory. Many courses in one!",
+                duration: "69 hours",
+                lectures: 319,
+                students: 789456
+            },
+            {
+                id: 2,
+                title: "Python for Data Science and Machine Learning Bootcamp",
+                instructor: "Jose Portilla",
+                price: 89.99,
+                originalPrice: 199.99,
+                rating: 4.6,
+                reviewCount: 156789,
+                image: "/placeholder.svg?height=180&width=300",
+                level: "Intermediate",
+                category: "Data Science",
+                description: "Learn how to use NumPy, Pandas, Seaborn, Matplotlib, Plotly, Scikit-Learn, Machine Learning, Tensorflow, and more!",
+                duration: "25 hours",
+                lectures: 165,
+                students: 567890
+            },
+            {
+                id: 3,
+                title: "React - The Complete Guide 2024 (incl Hooks, React Router, Redux)",
+                instructor: "Maximilian Schwarzmüller",
+                price: 94.99,
+                originalPrice: 199.99,
+                rating: 4.6,
+                reviewCount: 198765,
+                image: "/placeholder.svg?height=180&width=300",
+                level: "Intermediate",
+                category: "Development",
+                description: "Dive in and learn React.js from scratch! Learn Reactjs, Hooks, Redux, React Routing, Animations, Next.js and way more!",
+                duration: "48 hours",
+                lectures: 487,
+                students: 678901
+            },
+            {
+                id: 4,
+                title: "AWS Certified Solutions Architect - Associate 2024",
+                instructor: "Stephane Maarek",
+                price: 79.99,
+                originalPrice: 199.99,
+                rating: 4.7,
+                reviewCount: 145632,
+                image: "/placeholder.svg?height=180&width=300",
+                level: "Intermediate",
+                category: "IT & Software",
+                description: "Full Practice Exam with Explanations included! PASS the Amazon Web Services Solutions Architect Associate Exam!",
+                duration: "27 hours",
+                lectures: 395,
+                students: 456789
+            },
+            {
+                id: 5,
+                title: "The Complete Digital Marketing Course - 12 Courses in 1",
+                instructor: "Daragh Walsh",
+                price: 89.99,
+                originalPrice: 199.99,
+                rating: 4.5,
+                reviewCount: 123456,
+                image: "/placeholder.svg?height=180&width=300",
+                level: "Beginner",
+                category: "Marketing",
+                description: "Master Digital Marketing Strategy, Social Media Marketing, SEO, YouTube, Email, Facebook Marketing, Analytics & More!",
+                duration: "36 hours",
+                lectures: 274,
+                students: 345678
+            },
+            {
+                id: 6,
+                title: "Complete Blender Creator: Learn 3D Modelling for Beginners",
+                instructor: "GameDev.tv Team",
+                price: 84.99,
+                originalPrice: 199.99,
+                rating: 4.7,
+                reviewCount: 98765,
+                image: "/placeholder.svg?height=180&width=300",
+                level: "Beginner",
+                category: "Design",
+                description: "Use Blender to Create Beautiful 3D models for Video Games, 3D Printing & More. Beginners Level Course",
+                duration: "17 hours",
+                lectures: 156,
+                students: 234567
+            }
+        ];
+
+        // Categories data
+        const categories = [
+            { name: "Development", icon: "💻", count: "2,500+ courses" },
+            { name: "Business", icon: "💼", count: "1,800+ courses" },
+            { name: "Design", icon: "🎨", count: "1,200+ courses" },
+            { name: "Marketing", icon: "📈", count: "900+ courses" },
+            { name: "IT & Software", icon: "⚙️", count: "1,500+ courses" },
+            { name: "Data Science", icon: "📊", count: "800+ courses" },
+            { name: "Photography", icon: "📸", count: "600+ courses" },
+            { name: "Music", icon: "🎵", count: "400+ courses" }
+        ];
+
+        // Display learning paths
+        function displayLearningPaths() {
+            const pathsGrid = document.getElementById('learningPathsGrid');
+            pathsGrid.innerHTML = learningPaths.map(path => `
+                <div class="path-card" onclick="openPathModal(${path.id})">
+                    <div class="path-header">
+                        <div class="path-icon">${path.icon}</div>
+                        <div class="path-info">
+                            <h3>${path.title}</h3>
+                            <div class="path-duration">${path.duration} • ${path.totalCourses} courses</div>
+                        </div>
+                    </div>
+                    
+                    <p class="path-description">${path.description}</p>
+                    
+                    <div class="path-stats">
+                        <div class="stat">
+                            <div class="stat-number">${path.totalHours}</div>
+                            <div class="stat-label">Hours</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">${path.avgSalary}</div>
+                            <div class="stat-label">Avg Salary</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">${path.jobOpenings}</div>
+                            <div class="stat-label">Job Openings</div>
+                        </div>
+                    </div>
+                    
+                    <div class="path-courses">
+                        <h4>Learning Path Includes:</h4>
+                        <ul class="course-list">
+                            ${path.courses.slice(0, 3).map(course => `<li>${course}</li>`).join('')}
+                            ${path.courses.length > 3 ? `<li>+ ${path.courses.length - 3} more courses</li>` : ''}
+                        </ul>
+                    </div>
+                    
+                    <button class="start-path-btn" onclick="event.stopPropagation(); openPathModal(${path.id})">
+                        View Learning Path
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Open learning path modal
+        function openPathModal(pathId) {
+            currentPath = learningPaths.find(path => path.id === pathId);
+            if (!currentPath) return;
+
+            const modal = document.getElementById('pathModal');
+            const pathDetails = document.getElementById('pathDetails');
+
+            pathDetails.innerHTML = `
+                <div class="course-details-grid">
+                    <div class="course-info">
+                        <h2>${currentPath.icon} ${currentPath.title}</h2>
+                        <p style="font-size: 18px; color: #6a6f73; margin-bottom: 24px;">${currentPath.description}</p>
+                        
+                        <div style="margin-bottom: 32px;">
+                            <h3 style="margin-bottom: 16px;">Complete Course Curriculum</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                ${currentPath.courses.map((course, index) => `
+                                    <li style="margin-bottom: 12px; padding: 12px; background: #f7f9fa; border-radius: 8px; display: flex; align-items: center;">
+                                        <span style="background: #a435f0; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin-right: 12px;">${index + 1}</span>
+                                        <span>${course}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 style="margin-bottom: 16px;">Skills You'll Master</h3>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${currentPath.skills.map(skill => `
+                                    <span style="background: #e3f2fd; color: #1976d2; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">${skill}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 style="margin-bottom: 16px;">Career Opportunities</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                ${currentPath.careerOutcomes.map(career => `
+                                    <li style="margin-bottom: 8px; display: flex; align-items: center;">
+                                        <span style="color: #48bb78; margin-right: 8px;">🎯</span>
+                                        <span>${career}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="course-sidebar">
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">${currentPath.icon}</div>
+                            <h3 style="margin-bottom: 8px;">${currentPath.title}</h3>
+                            <p style="color: #6a6f73;">${currentPath.duration}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 12px; background: white; border-radius: 8px;">
+                                <span>Total Courses:</span>
+                                <span style="font-weight: 600;">${currentPath.totalCourses}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 12px; background: white; border-radius: 8px;">
+                                <span>Total Hours:</span>
+                                <span style="font-weight: 600;">${currentPath.totalHours} hours</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 12px; background: white; border-radius: 8px;">
+                                <span>Average Salary:</span>
+                                <span style="font-weight: 600; color: #48bb78;">${currentPath.avgSalary}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: white; border-radius: 8px;">
+                                <span>Job Openings:</span>
+                                <span style="font-weight: 600; color: #a435f0;">${currentPath.jobOpenings}</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #fff3cd; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                            <h4 style="color: #856404; margin-bottom: 8px;">💡 Career Guarantee</h4>
+                            <p style="color: #856404; font-size: 14px;">Complete this path and we'll help you land a job or get your money back!</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close path modal
+        function closePathModal() {
+            document.getElementById('pathModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Start learning path
+        function startLearningPath() {
+            if (!currentPath) return;
+            
+            alert(`🚀 Starting your ${currentPath.title} journey!\n\nYou'll begin with: ${currentPath.courses[0]}\n\nThis would redirect to the first course in a real application.`);
+            closePathModal();
+        }
+
+        // Fetch courses from API (with fallback to sample data)
+        async function fetchCourses() {
+            try {
+                // Attempt to fetch from RapidAPI
+                const response = await fetch(`${API_BASE_URL}/courses`, {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': RAPIDAPI_KEY,
+                        'X-RapidAPI-Host': 'udemy-course-scrapper-api.p.rapidapi.com'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.courses || data.results || data;
+            } catch (error) {
+                console.log('API fetch failed, using sample data:', error);
+                // Use sample data as fallback
+                return sampleCourses;
+            }
+        }
+
+        // Initialize the application
+        async function init() {
+            try {
+                // Load learning paths
+                displayLearningPaths();
+                
+                // Load categories
+                displayCategories();
+                
+                // Load courses
+                allCourses = await fetchCourses();
+                
+                // Add more sample courses for demonstration
+                const additionalCourses = generateAdditionalCourses();
+                allCourses = [...allCourses, ...additionalCourses];
+                
+                filteredCourses = [...allCourses];
+                
+                populateFilters();
+                displayCourses();
+                updatePagination();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('coursesContainer').style.display = 'grid';
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        // Generate additional sample courses
+        function generateAdditionalCourses() {
+            const courseTemplates = [
+                { title: "Machine Learning A-Z™: Hands-On Python & R In Data Science", category: "Data Science", level: "Intermediate" },
+                { title: "The Web Developer Bootcamp 2024", category: "Development", level: "Beginner" },
+                { title: "Adobe Photoshop CC – Essentials Training Course", category: "Design", level: "Beginner" },
+                { title: "Google Ads (Adwords) Certification Course", category: "Marketing", level: "Intermediate" },
+                { title: "Ethical Hacking From Scratch", category: "IT & Software", level: "Advanced" },
+                { title: "Photography Masterclass: A Complete Guide to Photography", category: "Photography", level: "Beginner" },
+                { title: "Music Theory Comprehensive Complete!", category: "Music", level: "Beginner" },
+                { title: "The Complete Financial Analyst Course 2024", category: "Business", level: "Intermediate" }
+            ];
+
+            return courseTemplates.map((template, index) => ({
+                id: 100 + index,
+                title: template.title,
+                instructor: `Expert Instructor ${index + 1}`,
+                price: Math.floor(Math.random() * 100) + 50,
+                originalPrice: Math.floor(Math.random() * 100) + 150,
+                rating: (Math.random() * 1.5 + 3.5).toFixed(1),
+                reviewCount: Math.floor(Math.random() * 100000) + 10000,
+                image: `/placeholder.svg?height=180&width=300`,
+                level: template.level,
+                category: template.category,
+                description: `Comprehensive course covering all aspects of ${template.title.split(':')[0]}`,
+                duration: `${Math.floor(Math.random() * 40) + 10} hours`,
+                lectures: Math.floor(Math.random() * 200) + 50,
+                students: Math.floor(Math.random() * 500000) + 50000
+            }));
+        }
+
+        // Display categories
+        function displayCategories() {
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            categoriesGrid.innerHTML = categories.map(category => `
+                <div class="category-card" onclick="filterByCategory('${category.name}')">
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-name">${category.name}</div>
+                    <div class="category-count">${category.count}</div>
+                </div>
+            `).join('');
+        }
+
+        // Populate filter dropdowns
+        function populateFilters() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const uniqueCategories = [...new Set(allCourses.map(course => course.category))];
+            
+            categoryFilter.innerHTML = '<option value="">All Categories</option>' +
+                uniqueCategories.map(category => `<option value="${category}">${category}</option>`).join('');
+        }
+
+        // Display courses
+        function displayCourses() {
+            const container = document.getElementById('coursesContainer');
+            const startIndex = (currentPage - 1) * coursesPerPage;
+            const endIndex = startIndex + coursesPerPage;
+            const coursesToShow = filteredCourses.slice(startIndex, endIndex);
+
+            if (coursesToShow.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 64px; color: #6a6f73;"><h3>No courses found</h3><p>Try adjusting your filters to see more results.</p></div>';
+                return;
+            }
+
+            container.innerHTML = coursesToShow.map(course => `
+                <div class="course-card" onclick="openCourseModal(${course.id})">
+                    <div class="course-image">
+                        <img src="${course.image}" alt="${course.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='📚';">
+                    </div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-instructor">${course.instructor}</p>
+                        <div class="course-rating">
+                            <span class="rating-stars">${'★'.repeat(Math.floor(course.rating))}${'☆'.repeat(5-Math.floor(course.rating))}</span>
+                            <span class="rating-number">${course.rating}</span>
+                            <span class="rating-count">(${course.reviewCount.toLocaleString()})</span>
+                        </div>
+                        <div class="course-price">
+                            <span class="current-price">$${course.price}</span>
+                            ${course.originalPrice ? `<span class="original-price">$${course.originalPrice}</span>` : ''}
+                        </div>
+                        <span class="course-level">${course.level}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            renderPagination();
+        }
+
+        // Filter courses
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const levelFilter = document.getElementById('levelFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            filteredCourses = allCourses.filter(course => {
+                const matchesCategory = !categoryFilter || course.category === categoryFilter;
+                const matchesLevel = !levelFilter || course.level === levelFilter;
+                const matchesPrice = !priceFilter || 
+                    (priceFilter === 'free' && course.price === 0) ||
+                    (priceFilter === 'paid' && course.price > 0);
+
+                return matchesCategory && matchesLevel && matchesPrice;
+            });
+
+            // Apply sorting
+            if (sortFilter === 'rating') {
+                filteredCourses.sort((a, b) => b.rating - a.rating);
+            } else if (sortFilter === 'price_low') {
+                filteredCourses.sort((a, b) => a.price - b.price);
+            } else if (sortFilter === 'price_high') {
+                filteredCourses.sort((a, b) => b.price - a.price);
+            } else if (sortFilter === 'newest') {
+                filteredCourses.sort((a, b) => b.id - a.id);
+            }
+
+            currentPage = 1;
+            displayCourses();
+            updatePagination();
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            document.getElementById('categoryFilter').value = category;
+            applyFilters();
+            document.querySelector('.courses-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Search courses
+        function searchCourses() {
+            const searchTerm = document.getElementById('heroSearch').value.toLowerCase();
+            if (!searchTerm) return;
+
+            filteredCourses = allCourses.filter(course => 
+                course.title.toLowerCase().includes(searchTerm) ||
+                course.description.toLowerCase().includes(searchTerm) ||
+                course.category.toLowerCase().includes(searchTerm)
+            );
+
+            currentPage = 1;
+            displayCourses();
+            updatePagination();
+            document.querySelector('.courses-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Open course modal
+        function openCourseModal(courseId) {
+            currentCourse = allCourses.find(course => course.id === courseId);
+            if (!currentCourse) return;
+
+            const modal = document.getElementById('courseModal');
+            const courseDetails = document.getElementById('courseDetails');
+
+            courseDetails.innerHTML = `
+                <div class="course-details-grid">
+                    <div class="course-info">
+                        <h2>${currentCourse.title}</h2>
+                        <p style="font-size: 18px; color: #6a6f73; margin-bottom: 16px;">${currentCourse.description}</p>
+                        
+                        <div class="course-meta">
+                            <div class="meta-item">
+                                <span>👨‍🏫</span>
+                                <span>Created by ${currentCourse.instructor}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>⭐</span>
+                                <span>${currentCourse.rating} (${currentCourse.reviewCount.toLocaleString()} ratings)</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>👥</span>
+                                <span>${currentCourse.students.toLocaleString()} students</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>🎯</span>
+                                <span>${currentCourse.level} Level</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <h3 style="margin-bottom: 16px;">What you'll learn</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin-bottom: 8px; display: flex; align-items: center;"><span style="color: #a435f0; margin-right: 8px;">✓</span> Master the fundamentals and advanced concepts</li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: center;"><span style="color: #a435f0; margin-right: 8px;">✓</span> Build real-world projects from scratch</li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: center;"><span style="color: #a435f0; margin-right: 8px;">✓</span> Get hands-on experience with industry tools</li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: center;"><span style="color: #a435f0; margin-right: 8px;">✓</span> Prepare for professional certification</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="course-sidebar">
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <div class="course-image" style="height: 200px; margin-bottom: 16px;">
+                                <img src="${currentCourse.image}" alt="${currentCourse.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='📚';">
+                            </div>
+                            <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">$${currentCourse.price}</div>
+                            ${currentCourse.originalPrice ? `<div style="color: #6a6f73; text-decoration: line-through;">$${currentCourse.originalPrice}</div>` : ''}
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Duration:</span>
+                                <span>${currentCourse.duration}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Lectures:</span>
+                                <span>${currentCourse.lectures}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Level:</span>
+                                <span>${currentCourse.level}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Category:</span>
+                                <span>${currentCourse.category}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('courseModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Enroll in course
+        function enrollCourse() {
+            if (!currentCourse) return;
+            
+            alert(`🎓 Starting "${currentCourse.title}"!\n\nThis would redirect to the course content in a real application.`);
+            closeModal();
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = '';
+
+            // Previous button
+            paginationHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button onclick="changePage(${i})" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
+            }
+
+            // Next button
+            paginationHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
+
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Change page
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayCourses();
+                updatePagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Update pagination
+        function updatePagination() {
+            renderPagination();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Filter event listeners
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('levelFilter').addEventListener('change', applyFilters);
+        document.getElementById('priceFilter').addEventListener('change', applyFilters);
+        document.getElementById('sortFilter').addEventListener('change', applyFilters);
+
+        // Search event listeners
+        document.getElementById('heroSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCourses();
+            }
+        });
+
+        document.getElementById('headerSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value;
+                document.getElementById('heroSearch').value = searchTerm;
+                searchCourses();
+            }
+        });
+
+        // Modal event listeners
+        document.querySelector('.close').addEventListener('click', closeModal);
+        document.getElementById('courseModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('pathModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closePathModal();
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                closePathModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Career Recommendation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -77,9 +78,16 @@
     }
 
     @media (max-width: 600px) {
-      h2 { font-size: 1.6rem; word-wrap: break-word; }
-      h3 { font-size: 1.3rem; word-wrap: break-word; }
-      .career-container { padding: 20px; }
+      body { padding: 16px; }
+      h2 { font-size: 1.5rem; word-wrap: break-word; }
+      h3 { font-size: 1.2rem; word-wrap: break-word; }
+      .career-container { padding: 20px 16px; }
+      p { font-size: 1rem; }
+    }
+
+    @media (max-width: 390px) {
+      h2 { font-size: 1.3rem; }
+      .career-container { padding: 16px 12px; border-radius: 10px; }
     }
   </style>
 </head>

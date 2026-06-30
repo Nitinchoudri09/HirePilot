@@ -11,7 +11,10 @@ from django.core.mail import BadHeaderError
 from smtplib import SMTPException
 import socket
 import subprocess
+import logging
 from django.contrib.auth import login as auth_login
+
+logger = logging.getLogger(__name__)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -40,77 +43,123 @@ def supabase_auth_callback(request):
       2. Get-or-create a Django User from the verified email.
       3. Log the user in (create Django session).
       4. Return JSON { ok: true, redirect: "/dashboard/" }.
+
+    All exceptions are caught at the top level so the response is always
+    JSON — never an HTML 500 page.
     """
+    # ─ Guard: POST only ──────────────────────────────────────────────────────
     if request.method != 'POST':
         return JsonResponse({'ok': False, 'error': 'POST required'}, status=405)
 
     try:
-        body = json.loads(request.body)
-    except (json.JSONDecodeError, ValueError):
-        return JsonResponse({'ok': False, 'error': 'Invalid JSON'}, status=400)
+        # ─ Parse body ────────────────────────────────────────────────────────
+        try:
+            body = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'ok': False, 'error': 'Invalid JSON'}, status=400)
 
-    access_token = body.get('access_token', '').strip()
-    if not access_token:
-        return JsonResponse({'ok': False, 'error': 'Missing access_token'}, status=400)
+        access_token = body.get('access_token', '').strip()
+        if not access_token:
+            return JsonResponse({'ok': False, 'error': 'Missing access_token'}, status=400)
 
-    # ─ Verify token with Supabase REST API ──────────────────────────────
-    supabase_url = settings.SUPABASE_URL
-    supabase_anon_key = settings.SUPABASE_ANON_KEY
-    headers = {
-        'Authorization': f'Bearer {access_token}',
-        'apikey': supabase_anon_key,
-    }
-    try:
-        resp = http_requests.get(
-            f'{supabase_url}/auth/v1/user',
-            headers=headers,
-            timeout=10,
-        )
-        if resp.status_code != 200:
+        # ─ Validate Supabase credentials are configured ──────────────────────
+        supabase_url = getattr(settings, 'SUPABASE_URL', '').strip()
+        supabase_anon_key = getattr(settings, 'SUPABASE_ANON_KEY', '').strip()
+
+        if not supabase_url or not supabase_anon_key:
+            logger.error('SUPABASE_URL or SUPABASE_ANON_KEY is not configured.')
             return JsonResponse(
-                {'ok': False, 'error': 'Supabase token verification failed'},
-                status=401,
+                {'ok': False, 'error': 'Server misconfiguration: Supabase credentials missing'},
+                status=500,
             )
-        user_data = resp.json()
-    except http_requests.RequestException as exc:
-        return JsonResponse({'ok': False, 'error': f'Network error: {exc}'}, status=502)
 
-    # ─ Extract user info ──────────────────────────────────────────────────
-    email = (user_data.get('email') or body.get('email', '')).lower().strip()
-    if not email:
-        return JsonResponse({'ok': False, 'error': 'No email in Supabase response'}, status=400)
-
-    user_meta = user_data.get('user_metadata', {})
-    full_name  = user_meta.get('full_name') or user_meta.get('name') or body.get('full_name', '')
-    name_parts = full_name.split(' ', 1) if full_name else []
-    first_name = name_parts[0] if name_parts else ''
-    last_name  = name_parts[1] if len(name_parts) > 1 else ''
-
-    # ─ Get-or-create Django user ─────────────────────────────────────────
-    user, created = User.objects.get_or_create(
-        email=email,
-        defaults={
-            'username': email.split('@')[0],
-            'first_name': first_name,
-            'last_name': last_name,
+        # ─ Verify token with Supabase REST API ───────────────────────────────
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'apikey': supabase_anon_key,
         }
-    )
-    if created:
-        base_username = email.split('@')[0]
-        username = base_username
-        counter = 1
-        while User.objects.filter(username=username).exclude(pk=user.pk).exists():
-            username = f'{base_username}{counter}'
-            counter += 1
-        user.username = username
-        user.set_unusable_password()  # Supabase/Google users don't need a local password
-        user.save()
+        try:
+            resp = http_requests.get(
+                f'{supabase_url}/auth/v1/user',
+                headers=headers,
+                timeout=10,
+            )
+            if resp.status_code != 200:
+                logger.warning(
+                    'Supabase token verification failed. Status: %s  Body: %s',
+                    resp.status_code, resp.text[:200],
+                )
+                return JsonResponse(
+                    {'ok': False, 'error': 'Supabase token verification failed'},
+                    status=401,
+                )
+            user_data = resp.json()
+        except http_requests.RequestException as exc:
+            logger.error('Network error reaching Supabase: %s', exc)
+            return JsonResponse({'ok': False, 'error': f'Network error: {exc}'}, status=502)
 
-    # ─ Log in — create Django session ────────────────────────────────────
-    user.backend = 'django.contrib.auth.backends.ModelBackend'
-    auth_login(request, user)
+        # ─ Extract user info ─────────────────────────────────────────────────
+        email = (user_data.get('email') or body.get('email', '')).lower().strip()
+        if not email:
+            return JsonResponse({'ok': False, 'error': 'No email in Supabase response'}, status=400)
 
-    return JsonResponse({'ok': True, 'redirect': '/dashboard/'})
+        user_meta = user_data.get('user_metadata', {})
+        full_name  = user_meta.get('full_name') or user_meta.get('name') or body.get('full_name', '')
+        name_parts = full_name.split(' ', 1) if full_name else []
+        first_name = name_parts[0] if name_parts else ''
+        last_name  = name_parts[1] if len(name_parts) > 1 else ''
+
+        # ─ Safe email lookup ─────────────────────────────────────────────────
+        # IMPORTANT: Django's default User model does NOT enforce email uniqueness.
+        # get_or_create(email=...) raises MultipleObjectsReturned if duplicates exist.
+        # We use filter().first() instead and create only when no match is found.
+        user = User.objects.filter(email=email).first()
+
+        if user is None:
+            # Generate a unique username from the email local-part
+            base_username = email.split('@')[0][:30]  # Django max_length=150, but 30 is safe
+            username = base_username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f'{base_username}{counter}'[:30]
+                counter += 1
+
+            user = User(
+                username=username,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+            )
+            user.set_unusable_password()  # Supabase/Google users don't need a local password
+            user.save()
+            logger.info('Created new Django user: %s (%s)', username, email)
+        else:
+            # Update name fields if they are currently blank
+            changed = False
+            if not user.first_name and first_name:
+                user.first_name = first_name
+                changed = True
+            if not user.last_name and last_name:
+                user.last_name = last_name
+                changed = True
+            if changed:
+                user.save(update_fields=['first_name', 'last_name'])
+
+        # ─ Log in — create Django session ────────────────────────────────────
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        auth_login(request, user)
+        logger.info('Logged in user via Supabase OAuth: %s', user.username)
+
+        return JsonResponse({'ok': True, 'redirect': '/dashboard/'})
+
+    except Exception as exc:
+        # Top-level safety net — ensures we ALWAYS return JSON, never an HTML 500 page
+        logger.exception('Unexpected error in supabase_auth_callback: %s', exc)
+        return JsonResponse(
+            {'ok': False, 'error': 'An unexpected server error occurred. Please try again.'},
+            status=500,
+        )
+
 
 
 

@@ -430,11 +430,45 @@
       .split-container { flex-direction: column; }
       .left-pane { padding: 2rem; flex: 0 1 auto; align-items: center; text-align: center; }
       .hero-subtitle { margin: 0 auto 2rem; }
-      .feature-list { display: none; /* Hide on mobile to save space */ }
+      .feature-list { display: none; }
       .illustration-wrapper { display: none; }
       .trust-section { display: none; }
       .right-pane { padding: 1rem; align-items: flex-start; }
       .auth-card { padding: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .split-container { flex-direction: column; }
+      .left-pane {
+        display: none; /* Hide decorative pane completely on mobile */
+      }
+      .right-pane {
+        flex: 1;
+        width: 100%;
+        padding: 2rem 1.25rem;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .auth-card {
+        padding: 2rem 1.5rem;
+        max-width: 100%;
+        border-radius: 20px;
+      }
+      .auth-header h2 { font-size: 1.6rem; }
+      /* Prevent iOS auto-zoom on input focus */
+      .form-group input {
+        font-size: 16px !important;
+      }
+      button[type="submit"] { font-size: 1rem; padding: 14px; }
+    }
+
+    @media (max-width: 390px) {
+      .right-pane { padding: 1.5rem 1rem; }
+      .auth-card { padding: 1.5rem 1.25rem; border-radius: 16px; }
+      .auth-header img { width: 40px; height: 40px; }
+      .auth-header h2 { font-size: 1.4rem; }
+      .social-btns { flex-direction: column; }
     }
   </style>
 </head>
@@ -589,47 +623,99 @@
   </div>
 
   <script>
-    // ── Supabase client ────────────────────────────────────────────────────
+    // ── Helpers ─────────────────────────────────────────────────────────────
+    function showAuthError(message) {
+      let errBox = document.getElementById('auth-error-box');
+      if (!errBox) {
+        errBox = document.createElement('div');
+        errBox.id = 'auth-error-box';
+        errBox.style.cssText = 'background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:10px;padding:12px 16px;margin-bottom:1rem;color:#fca5a5;font-size:0.9rem;display:flex;align-items:flex-start;gap:8px;';
+        const card = document.querySelector('.auth-card');
+        if (card) card.insertAdjacentElement('afterbegin', errBox);
+      }
+      errBox.innerHTML = `⚠️ ${message}`;
+      errBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetGoogleBtn() {
+      const btn = document.getElementById('btn-google-login');
+      if (!btn) return;
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M24 12.27c0-.84-.07-1.65-.2-2.43H12v4.61h6.72a5.75 5.75 0 01-2.49 3.77v3.13h4.03c2.36-2.18 3.74-5.38 3.74-9.08z"/><path fill="#34A853" d="M12 24c3.38 0 6.22-1.12 8.29-3.03l-4.03-3.13c-1.12.75-2.55 1.2-4.26 1.2-3.28 0-6.06-2.22-7.05-5.2H.82v3.23C2.88 21.1 7.12 24 12 24z"/><path fill="#FBBC05" d="M4.95 13.84a7.17 7.17 0 010-3.68V6.93H.82a12.01 12.01 0 000 10.14l4.13-3.23z"/><path fill="#4285F4" d="M12 4.96c1.84 0 3.49.63 4.8 1.88l3.6-3.6C18.22 1.12 15.38 0 12 0 7.12 0 2.88 2.9.82 6.93l4.13 3.23c.99-2.98 3.77-5.2 7.05-5.2z"/></svg> Google`;
+    }
+
+    // ── Supabase client ──────────────────────────────────────────────────────
     const SUPABASE_URL  = 'https://mbugyhaebsauetyywgse.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1idWd5aGFlYnNhdWV0eXl3Z3NlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjg4NjksImV4cCI6MjA5Nzg0NDg2OX0.AO-zo3Sox5aaCS6ZVFIaeJF20NJTXTdPsquHS0u8J9g';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    // ── On page load: only act if returning from OAuth redirect ──────────
+    // ── On page load: handle OAuth callback ─────────────────────────────────
     (async () => {
       const isOAuthCallback =
         window.location.hash.includes('access_token') ||
         window.location.search.includes('code=');
 
       if (isOAuthCallback) {
-        // We just came back from Google via Supabase — exchange the token
-        const { data: { session } } = await _supabase.auth.getSession();
-        if (session && session.access_token) {
-          const btn = document.getElementById('btn-google-login');
-          if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+        const btn = document.getElementById('btn-google-login');
+        if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+
+        try {
+          const { data, error } = await _supabase.auth.getSession();
+
+          if (error) {
+            console.error('[HirePilot] Supabase getSession error:', error);
+            showAuthError('Google sign-in failed: ' + error.message);
+            resetGoogleBtn();
+            return;
+          }
+
+          const session = data?.session;
+          if (!session || !session.access_token) {
+            console.warn('[HirePilot] No valid session after OAuth redirect (may have been consumed by a refresh).');
+            showAuthError('Session expired or already used. Please click “Continue with Google” again.');
+            resetGoogleBtn();
+            return;
+          }
+
           await exchangeTokenWithDjango(session);
+
+        } catch (err) {
+          console.error('[HirePilot] Unexpected OAuth callback error:', err);
+          showAuthError('An unexpected error occurred. Please try again.');
+          resetGoogleBtn();
+        } finally {
+          // Always clean the fragment from the URL so F5 doesn't re-trigger the flow
+          if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
         }
       } else {
-        // Normal page visit — clear any stale Supabase session so it doesn't
-        // auto-redirect next time the user opens the login page.
-        await _supabase.auth.signOut();
+        // Normal page visit — clear any stale Supabase session
+        await _supabase.auth.signOut().catch(() => {});
       }
     })();
 
-    // ── Trigger Supabase Google OAuth ────────────────────────────────────
+    // ── Trigger Supabase Google OAuth ────────────────────────────────────────
     async function loginWithGoogle() {
       const btn = document.getElementById('btn-google-login');
       if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
+      const existingErr = document.getElementById('auth-error-box');
+      if (existingErr) existingErr.remove();
       const { error } = await _supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin + '/login/' },
+        options: {
+          redirectTo: window.location.origin + '/login/',
+          queryParams: { prompt: 'select_account' },
+        },
       });
       if (error) {
-        alert('Google sign-in error: ' + error.message);
-        if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M24 12.27c0-.84-.07-1.65-.2-2.43H12v4.61h6.72a5.75 5.75 0 01-2.49 3.77v3.13h4.03c2.36-2.18 3.74-5.38 3.74-9.08z"/><path fill="#34A853" d="M12 24c3.38 0 6.22-1.12 8.29-3.03l-4.03-3.13c-1.12.75-2.55 1.2-4.26 1.2-3.28 0-6.06-2.22-7.05-5.2H.82v3.23C2.88 21.1 7.12 24 12 24z"/><path fill="#FBBC05" d="M4.95 13.84a7.17 7.17 0 010-3.68V6.93H.82a12.01 12.01 0 000 10.14l4.13-3.23z"/><path fill="#4285F4" d="M12 4.96c1.84 0 3.49.63 4.8 1.88l3.6-3.6C18.22 1.12 15.38 0 12 0 7.12 0 2.88 2.9.82 6.93l4.13 3.23c.99-2.98 3.77-5.2 7.05-5.2z"/></svg> Google'; }
+        console.error('[HirePilot] OAuth initiation error:', error);
+        showAuthError('Google sign-in error: ' + error.message);
+        resetGoogleBtn();
       }
     }
 
-    // ── POST token to Django → get Django session → redirect ─────────────
+    // ── POST token to Django → create Django session → redirect ─────────────
     async function exchangeTokenWithDjango(session) {
       try {
         const res = await fetch('/auth/supabase/callback/', {
@@ -637,7 +723,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             access_token: session.access_token,
-            email:        session.user?.email        || '',
+            email:        session.user?.email                     || '',
             full_name:    session.user?.user_metadata?.full_name || '',
           }),
         });
@@ -645,10 +731,14 @@
         if (data.ok) {
           window.location.href = data.redirect || '/dashboard/';
         } else {
-          alert('Sign-in failed: ' + (data.error || 'Unknown error'));
+          console.error('[HirePilot] Django callback error:', data.error);
+          showAuthError('Sign-in failed: ' + (data.error || 'Unknown error'));
+          resetGoogleBtn();
         }
       } catch (err) {
-        alert('Network error: ' + err.message);
+        console.error('[HirePilot] Network error during token exchange:', err);
+        showAuthError('Network error. Please check your connection and try again.');
+        resetGoogleBtn();
       }
     }
 

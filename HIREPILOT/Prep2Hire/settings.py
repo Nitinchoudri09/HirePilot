@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ─────────────────────────────────────────────────────────────────────────────
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+&0#=zd20x+xffu#$7jduvmsb)lihg%w2+$f8hhy4=zc!ms19v')
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "hire-pilot-s2z7.onrender.com",
@@ -23,6 +23,8 @@ ALLOWED_HOSTS = [
 # Required in Django 4.0+ when DEBUG=False — allows forms to POST on Render
 CSRF_TRUSTED_ORIGINS = [
     "https://hire-pilot-s2z7.onrender.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -170,3 +172,20 @@ GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
 # ─────────────────────────────────────────────────────────────────────────────
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Startup sanity check — warn loudly in logs if critical env vars are missing
+# ─────────────────────────────────────────────────────────────────────────────
+import logging as _logging
+_startup_logger = _logging.getLogger('django')
+if not SUPABASE_ANON_KEY:
+    _startup_logger.warning(
+        '[HirePilot] SUPABASE_ANON_KEY is not set. '
+        'Google OAuth via Supabase will fail. '
+        'Set this in your .env file or Render environment variables.'
+    )
+if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+    _startup_logger.warning(
+        '[HirePilot] GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is not set. '
+        'Configure these in your .env file or Render environment variables.'
+    )

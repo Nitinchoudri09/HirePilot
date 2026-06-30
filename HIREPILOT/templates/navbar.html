@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}HirePilot{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -52,6 +53,7 @@
       font-family: ''; 
       font-weight: 600;
     }
+    /* Desktop nav links */
     .nav-links {
       display: flex;
       gap: 20px;
@@ -83,6 +85,7 @@
       min-width: 160px;
       border-radius: 4px;
       overflow: hidden;
+      z-index: 999;
     }
     .dropdown a {
       padding: 10px;
@@ -103,24 +106,149 @@
       margin: auto;
       padding: 20px;
     }
+
+    /* ── Hamburger Button ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hamburger:hover { background: rgba(255,255,255,0.1); }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Mobile Drawer ── */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 998;
+      backdrop-filter: blur(2px);
+    }
+    .mobile-overlay.active { display: block; }
+
+    /* ── Mobile Responsive ── */
+    @media (max-width: 900px) {
+      .hamburger { display: flex; }
+      
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 70px;
+        right: 0;
+        width: min(320px, 85vw);
+        height: calc(100vh - 70px);
+        background: #0a0a0f;
+        padding: 20px 0;
+        gap: 0;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        border-left: 1px solid rgba(255,255,255,0.08);
+        box-shadow: -8px 0 32px rgba(0,0,0,0.4);
+      }
+      .nav-links.mobile-open { transform: translateX(0); }
+
+      .nav-item > a {
+        padding: 16px 24px;
+        font-size: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-radius: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 54px;
+      }
+      .nav-item > a:hover,
+      .nav-item.active > a {
+        background: rgba(21,101,192,0.3);
+        border-radius: 0;
+      }
+
+      /* Mobile dropdown — inline, not absolute */
+      .dropdown {
+        position: static;
+        display: none;
+        flex-direction: column;
+        background: rgba(21,101,192,0.15);
+        border-radius: 0;
+        min-width: unset;
+        overflow: hidden;
+        border-left: 3px solid #1565c0;
+        margin-left: 0;
+      }
+      .dropdown.mobile-open { display: flex; }
+      .dropdown a {
+        padding: 14px 24px 14px 32px;
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+      }
+      /* Stop hover-based dropdown on mobile */
+      .nav-item:hover .dropdown { display: none; }
+      .nav-item .dropdown.mobile-open { display: flex; }
+    }
+
+    @media (max-width: 480px) {
+      .logo span { font-size: 20px; }
+      .logo img { height: 40px; }
+      .main-content { padding: 12px; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Mobile overlay -->  
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
   <nav>
     <div class="navbar-container">
-      <a href = "/" style = "text-decoration: none;">
-      <div class="logo">
-        <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="Logo" style="width: 45px; height: 45px; object-fit: contain;">
-        <span style="font-family: 'League Spartan', sans-serif; letter-spacing:-0.5px;">HirePilot</span>
-      </div>
-    </a>
-      <div class="nav-links">
+      <a href="/" style="text-decoration: none;">
+        <div class="logo">
+          <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="Logo" style="width: 45px; height: 45px; object-fit: contain;">
+          <span style="font-family: 'League Spartan', sans-serif; letter-spacing:-0.5px;">HirePilot</span>
+        </div>
+      </a>
+
+      <!-- Hamburger button (mobile only) -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="navLinks">
         <div class="nav-item"><a href="/">Home</a></div>
 
         <div class="nav-item">
-          <a href="#">Jobs ▾</a>
-          <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Jobs <span>▾</span></a>
+          <div class="dropdown" id="drop-jobs">
             <a href="/jobs/roadmap/">Roadmaps</a>
             <a href="/jobs/available-jobs/">Available Jobs</a>
             <a href="/jobs/matches/">AI Job Matches</a>
@@ -132,19 +260,18 @@
         </div>
 
         <div class="nav-item">
-          <a href="#">Resume ▾</a>
-          <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Resume <span>▾</span></a>
+          <div class="dropdown" id="drop-resume">
             <a href="/resume-analyzer/">Score Checker</a>
             <a href="/resumes/builder/">Resume Builder</a>
           </div>
         </div>
 
         <div class="nav-item">
-          <a href="#">Skills Improvement ▾</a>
-          <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Skills Improvement <span>▾</span></a>
+          <div class="dropdown" id="drop-skills">
             <a href="/skills/quiz/">Quiz</a>
           </div>
-          
         </div>
       </div>
     </div>
@@ -179,6 +306,60 @@
   </div>
 
   <script>
+    // ── Hamburger / Mobile Nav ──────────────────────────────────────────────
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks     = document.getElementById('navLinks');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    function closeMobileNav() {
+      hamburgerBtn.classList.remove('open');
+      navLinks.classList.remove('mobile-open');
+      mobileOverlay.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('mobile-open');
+      hamburgerBtn.classList.toggle('open', isOpen);
+      mobileOverlay.classList.toggle('active', isOpen);
+      hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    mobileOverlay.addEventListener('click', closeMobileNav);
+
+    // Mobile dropdown toggles (tap to open/close)
+    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function(e) {
+        // Only intercept on mobile
+        if (window.innerWidth > 900) return;
+        e.preventDefault();
+        const parentItem = this.closest('.nav-item');
+        const dropdown = parentItem.querySelector('.dropdown');
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.toggle('mobile-open');
+        this.querySelector('span').textContent = isOpen ? '▴' : '▾';
+        // Close others
+        document.querySelectorAll('.nav-item .dropdown').forEach(d => {
+          if (d !== dropdown) {
+            d.classList.remove('mobile-open');
+            const otherToggle = d.closest('.nav-item').querySelector('.dropdown-toggle span');
+            if (otherToggle) otherToggle.textContent = '▾';
+          }
+        });
+      });
+    });
+
+    // Close nav when a leaf link is tapped
+    navLinks.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => {
+      link.addEventListener('click', closeMobileNav);
+    });
+
+    // Close nav on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) closeMobileNav();
+    });
+
+    // ── AI Chatbot ──────────────────────────────────────────────────────────
     const chatBtn = document.getElementById('ai-chat-btn');
     const chatPanel = document.getElementById('ai-chat-panel');
     const chatClose = document.getElementById('ai-chat-close');

@@ -69,6 +69,16 @@
     transition: color 0.3s ease;
   }
   .todo-actions button:hover { color: #dc2626; }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .todo-container { max-width: 100%; padding: 1.2rem; }
+    /* Prevent iOS auto-zoom */
+    .todo-form input[type="text"] { font-size: 16px !important; }
+    .todo-button { padding: 9px 12px; min-width: 48px; }
+    .todo-list li { font-size: 0.9rem; padding: 10px; min-height: 44px; }
+    .todo-actions button { min-width: 32px; min-height: 32px; font-size: 1.1rem; }
+  }
 </style>
 
 <div class="todo-container">
