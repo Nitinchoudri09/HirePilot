@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -201,18 +202,18 @@
         <div class="roadmap-container">
             {% for roadmap in roadmaps|slice:":10" %}
                 <div class="pdf-card">
-                    {% with clean_name=roadmap|slice:"9:"|cut:".pdf" %}
+                    {% with clean_name=roadmap|slice:"16:"|cut:".pdf" %}
                         <h3>{{ clean_name|title }}</h3>
                         
                         <div class="pdf-preview">
-                            <iframe src="/media/{{ roadmap }}#toolbar=0&navpanes=0" width="100%" height="100%" style="border:none;"></iframe>
+                            <iframe src="{% static roadmap %}#toolbar=0&navpanes=0" width="100%" height="100%" style="border:none;"></iframe>
                         </div>
 
                         <p>
                             If preview doesn’t work, 
-                            <a href="/media/{{ roadmap }}" target="_blank" rel="noopener noreferrer">open in new tab</a>
+                            <a href="{% static roadmap %}" target="_blank" rel="noopener noreferrer">open in new tab</a>
                         </p>
-                        <a href="/media/{{ roadmap }}" download class="download-btn">
+                        <a href="{% static roadmap %}" download class="download-btn">
                             <button>Download PDF</button>
                         </a>
                     {% endwith %}

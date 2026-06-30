@@ -8,14 +8,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 
 def roadmap_view(request):
-    roadmap_dir = os.path.join(settings.MEDIA_ROOT, 'roadmaps')
-    os.makedirs(roadmap_dir, exist_ok=True)  # ensure dir exists on fresh deploy
+    roadmap_dir = os.path.join(settings.BASE_DIR, 'Home', 'static', 'assets', 'roadmaps')
     try:
         roadmap_files = os.listdir(roadmap_dir)
-    except OSError:
+    except FileNotFoundError:
         roadmap_files = []
+    
     context = {
-        'roadmaps': [f'roadmaps/{file}' for file in roadmap_files if file.endswith('.pdf')]
+        'roadmaps': [f'assets/roadmaps/{file}' for file in roadmap_files if file.endswith('.pdf')]
     }
     return render(request, 'roadmap.html', context)
 
