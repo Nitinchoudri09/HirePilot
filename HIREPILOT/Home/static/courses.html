@@ -1470,8 +1470,8 @@
                         <p class="course-instructor">${course.instructor}</p>
                         <div class="course-rating">
                             <span class="rating-stars">${'★'.repeat(Math.floor(course.rating))}${'☆'.repeat(5-Math.floor(course.rating))}</span>
-                            <span class="rating-number">${course.rating}</span>
-                            <span class="rating-count">(${course.reviewCount.toLocaleString()})</span>
+                            <span class="rating-number">${course.rating}/5</span>
+                            <span class="rating-count">(${course.reviewCount.toLocaleString()} Ratings)</span>
                         </div>
                         <div class="course-price">
                             <span class="current-price">$${course.price}</span>
@@ -1563,7 +1563,7 @@
                             </div>
                             <div class="meta-item">
                                 <span>⭐</span>
-                                <span>${currentCourse.rating} (${currentCourse.reviewCount.toLocaleString()} ratings)</span>
+                                <span>${currentCourse.rating}/5 (${currentCourse.reviewCount.toLocaleString()} Ratings)</span>
                             </div>
                             <div class="meta-item">
                                 <span>👥</span>

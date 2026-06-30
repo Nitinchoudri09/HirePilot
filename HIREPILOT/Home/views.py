@@ -235,7 +235,7 @@ def signup_view(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            auth_login(request, user)          # auto-login after signup
+            auth_login(request, user, backend='Home.backends.EmailOrUsernameModelBackend')          # auto-login after signup
             return redirect('dashboard')        # go straight to dashboard
     else:
         form = SignupForm()
