@@ -113,6 +113,11 @@ LOGIN_REDIRECT_URL = '/dashboard/'   # go to dashboard after login
 LOGOUT_REDIRECT_URL = '/'            # go to home after logout
 LOGIN_URL = '/login/'                # where @login_required redirects to
 
+AUTHENTICATION_BACKENDS = [
+    'Home.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Internationalisation
 # ─────────────────────────────────────────────────────────────────────────────
