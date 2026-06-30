@@ -14,7 +14,17 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+&0#=zd20x+xffu#$7jdu
 
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'hire-pilot-s2z7.onrender.com,localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS configuration
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', '')
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()]
+else:
+    ALLOWED_HOSTS = [
+        "hire-pilot-s2z7.onrender.com",
+        "localhost",
+        "127.0.0.1",
+        ".onrender.com",
+    ]
 
 # Required in Django 4.0+ when DEBUG=False — allows forms to POST on Render
 CSRF_TRUSTED_ORIGINS = [
