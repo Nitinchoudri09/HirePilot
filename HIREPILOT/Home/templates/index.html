@@ -674,67 +674,162 @@
 
 
       <!-- 
-        - #ABOUT
+        - #ABOUT (Meet the Minds)
       -->
+      <style>
+        .minds-section {
+          background: linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(124,58,237,0.05) 100%);
+          padding: 100px 0;
+          position: relative;
+          overflow: hidden;
+        }
+        /* Soft background shapes */
+        .minds-shape-1 {
+          position: absolute; top: -10%; left: -5%; width: 500px; height: 500px;
+          background: radial-gradient(circle, rgba(37,99,235,0.1) 0%, rgba(255,255,255,0) 70%);
+          border-radius: 50%; z-index: 0;
+        }
+        .minds-shape-2 {
+          position: absolute; bottom: -10%; right: -5%; width: 600px; height: 600px;
+          background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, rgba(255,255,255,0) 70%);
+          border-radius: 50%; z-index: 0;
+        }
+        
+        .minds-container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .minds-header { text-align: center; margin-bottom: 60px; }
+        .minds-title { font-size: 3rem; font-weight: 800; color: var(--text-main); font-family: 'League Spartan', sans-serif; margin-bottom: 20px; }
+        .minds-subtitle { font-size: 1.15rem; color: #4b5563; max-width: 800px; margin: 0 auto; line-height: 1.8; }
+        
+        .team-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 60px; }
+        @media (min-width: 768px) { .team-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .team-card {
+          background: var(--card-bg);
+          border-radius: 24px;
+          padding: 40px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+          transition: transform 0.4s ease, box-shadow 0.4s ease;
+          display: flex; flex-direction: column; align-items: center; text-align: center;
+          border: 1px solid rgba(156, 163, 175, 0.1);
+        }
+        .team-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.2); }
+        
+        .team-img-wrap {
+          width: 160px; height: 160px; border-radius: 50%; padding: 6px;
+          background: linear-gradient(135deg, #2563eb, #7c3aed);
+          margin-bottom: 25px;
+        }
+        .team-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--card-bg); }
+        
+        .team-name { font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-family: 'Poppins', sans-serif; }
+        .team-edu { font-size: 0.9rem; color: #6b7280; margin-bottom: 15px; font-weight: 500; }
+        .team-roles { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .role-badge { background: rgba(37,99,235,0.1); color: #2563eb; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+        .team-bio { font-size: 1rem; color: #6b7280; line-height: 1.7; margin-bottom: 25px; }
+        
+        .team-skills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .skill-tag { background: rgba(156, 163, 175, 0.1); color: var(--text-main); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; }
+        .team-card:hover .skill-tag { background: rgba(37,99,235,0.05); }
 
-      <section class="section about" id="about" aria-label="about">
-        <div class="container">
+        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        @media (min-width: 768px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .feat-card {
+          background: var(--card-bg);
+          border-radius: 20px;
+          padding: 35px;
+          text-align: left;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+          border: 1px solid rgba(156, 163, 175, 0.1);
+          transition: all 0.3s ease;
+        }
+        .feat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(124,58,237,0.08); border-color: rgba(124,58,237,0.2); }
+        .feat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; }
+        .feat-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 15px; }
+        .feat-desc { font-size: 0.95rem; color: #6b7280; line-height: 1.6; }
+        
+        .feat-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .feat-list span { background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+        
+        [data-theme="dark"] .minds-subtitle { color: #9ca3af; }
+        [data-theme="dark"] .team-edu { color: #9ca3af; }
+        [data-theme="dark"] .team-bio { color: #9ca3af; }
+        [data-theme="dark"] .feat-desc { color: #9ca3af; }
+      </style>
 
-          <figure class="about-banner">
+      <section class="minds-section" id="about">
+        <div class="minds-shape-1"></div>
+        <div class="minds-shape-2"></div>
+        <div class="minds-container">
+          
+          <div class="minds-header">
+            <h2 class="minds-title">🚀 Meet the Minds Behind HirePilot</h2>
+            <p class="minds-subtitle">We are passionate developers dedicated to helping students and professionals crack interviews, build ATS-friendly resumes, and land their dream jobs through AI-powered solutions.</p>
+          </div>
 
-            <div class="img-holder" style="--width: 520; --height: 370;">
-              <img src="{% static 'assets/images/about-banner.jpg' %}" width="520" height="370" loading="lazy" alt="about banner"
-                class="img-cover">
+          <!-- Team Cards -->
+          <div class="team-grid">
+            <!-- Member 1 -->
+            <div class="team-card">
+              <div class="team-img-wrap">
+                <img src="{% static 'assets/images/pruthviraj.jpg' %}" alt="Pruthviraj Tuppad" class="team-img" onerror="this.src='https://ui-avatars.com/api/?name=Pruthviraj+Tuppad&background=2563eb&color=fff'">
+              </div>
+              <h3 class="team-name">Pruthviraj Tuppad</h3>
+              <p class="team-edu">BE in Electronics and Communication Engineering</p>
+              <div class="team-roles">
+                <span class="role-badge">Frontend Developer</span>
+                <span class="role-badge">Software Tester</span>
+              </div>
+              <p class="team-bio">Passionate Frontend Developer and Software Tester focused on building responsive user interfaces, creating intuitive user experiences, and ensuring high-quality software through manual and automated testing.</p>
+              <div class="team-skills">
+                <span class="skill-tag">HTML</span> <span class="skill-tag">CSS</span> <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">React.js</span> <span class="skill-tag">Tailwind CSS</span>
+                <span class="skill-tag">Software Testing</span> <span class="skill-tag">Manual Testing</span> <span class="skill-tag">Automation Testing</span>
+              </div>
             </div>
 
-            <img src="{% static 'assets/images/about-shape-1.svg' %}" width="360" height="420" loading="lazy" alt=""
-              class="shape about-shape-1">
+            <!-- Member 2 -->
+            <div class="team-card">
+              <div class="team-img-wrap">
+                <img src="{% static 'assets/images/nitin.jpg' %}" alt="Nitin Choudri" class="team-img" onerror="this.src='https://ui-avatars.com/api/?name=Nitin+Choudri&background=7c3aed&color=fff'">
+              </div>
+              <h3 class="team-name">Nitin Choudri</h3>
+              <p class="team-edu">BE in Computer Science Engineering</p>
+              <div class="team-roles">
+                <span class="role-badge" style="background: rgba(124,58,237,0.1); color: #7c3aed;">Full Stack Developer</span>
+              </div>
+              <p class="team-bio">Full Stack Developer specializing in Python, Django, React, AI integration, REST APIs, and scalable web application development. Passionate about creating AI-powered solutions that simplify recruitment and interview preparation.</p>
+              <div class="team-skills">
+                <span class="skill-tag">Python</span> <span class="skill-tag">Django</span> <span class="skill-tag">React</span>
+                <span class="skill-tag">JavaScript</span> <span class="skill-tag">REST API</span>
+                <span class="skill-tag">AI Integration</span> <span class="skill-tag">SQL</span> <span class="skill-tag">Git</span> <span class="skill-tag">GitHub</span>
+              </div>
+            </div>
+          </div>
 
-            <img src="{% static 'assets/images/about-shape-2.svg' %}" width="371" height="220" loading="lazy" alt=""
-              class="shape about-shape-2">
+          <!-- Feature Cards -->
+          <div class="features-grid">
+            <div class="feat-card">
+              <div class="feat-icon" style="background: rgba(37,99,235,0.1); color: #2563eb;">🎯</div>
+              <h4 class="feat-title">Our Mission</h4>
+              <p class="feat-desc">Empower every student with AI-driven tools to improve resumes, prepare for interviews, and connect with better career opportunities.</p>
+            </div>
+            
+            <div class="feat-card">
+              <div class="feat-icon" style="background: rgba(124,58,237,0.1); color: #7c3aed;">🌍</div>
+              <h4 class="feat-title">Our Vision</h4>
+              <p class="feat-desc">Become one of the most trusted AI-powered career platforms helping millions of students achieve their dream jobs.</p>
+            </div>
 
-            <img src="{% static 'assets/images/about-shape-3.png' %}" width="722" height="528" loading="lazy" alt=""
-              class="shape about-shape-3">
-
-          </figure>
-
-          <div class="about-content">
-
-            <p class="section-subtitle">About Us</p>
-
-            <h2 class="h2 section-title">
-              Empowering <span class="span">job seekers</span> with AI-powered career tools
-            </h2>
-
-            <p class="section-text">
-              To make career preparation easier, smarter, and accessible for everyone. Whether you're a final-year student or a recent graduate, navigating resumes, interviews, and skill-building can be overwhelming. We’re here to change that.
-            </p>
-
-            <ul class="about-list">
-
-              <li class="about-item">
-                <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
-
-                <span class="span">Courses</span>
-              </li>
-
-              <li class="about-item">
-                <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
-
-                <span class="span">Job Applications</span>
-              </li>
-
-              <li class="about-item">
-                <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
-
-                <span class="span">Resume Analyzing</span>
-              </li>
-
-            </ul>
-
-            <img src="{% static 'assets/images/about-shape-4.svg' %}" width="100" height="100" loading="lazy" alt=""
-              class="shape about-shape-4">
-
+            <div class="feat-card">
+              <div class="feat-icon" style="background: rgba(16,185,129,0.1); color: #10b981;">💙</div>
+              <h4 class="feat-title">Our Values</h4>
+              <div class="feat-list">
+                <span>Innovation</span> <span>Integrity</span> <span>Continuous Learning</span>
+                <span>Quality</span> <span>User-Centric Design</span> <span>Collaboration</span>
+              </div>
+            </div>
           </div>
 
         </div>
