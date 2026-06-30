@@ -159,7 +159,7 @@ SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 # JS SDK (loaded via CDN in templates) handles OAuth; Django verifies the token.
 # ─────────────────────────────────────────────────────────────────────────────
 SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://mbugyhaebsauetyywgse.supabase.co')
-SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Google OAuth 2.0
@@ -178,9 +178,9 @@ RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
 # ─────────────────────────────────────────────────────────────────────────────
 import logging as _logging
 _startup_logger = _logging.getLogger('django')
-if not SUPABASE_ANON_KEY:
+if not SUPABASE_KEY:
     _startup_logger.warning(
-        '[HirePilot] SUPABASE_ANON_KEY is not set. '
+        '[HirePilot] SUPABASE_KEY is not set. '
         'Google OAuth via Supabase will fail. '
         'Set this in your .env file or Render environment variables.'
     )

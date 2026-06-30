@@ -64,10 +64,10 @@ def supabase_auth_callback(request):
 
         # ─ Validate Supabase credentials are configured ──────────────────────
         supabase_url = getattr(settings, 'SUPABASE_URL', '').strip()
-        supabase_anon_key = getattr(settings, 'SUPABASE_ANON_KEY', '').strip()
+        supabase_key = getattr(settings, 'SUPABASE_KEY', '').strip()
 
-        if not supabase_url or not supabase_anon_key:
-            logger.error('SUPABASE_URL or SUPABASE_ANON_KEY is not configured.')
+        if not supabase_url or not supabase_key:
+            logger.error('SUPABASE_URL or SUPABASE_KEY is not configured.')
             return JsonResponse(
                 {'ok': False, 'error': 'Server misconfiguration: Supabase credentials missing'},
                 status=500,
@@ -76,7 +76,7 @@ def supabase_auth_callback(request):
         # ─ Verify token with Supabase REST API ───────────────────────────────
         headers = {
             'Authorization': f'Bearer {access_token}',
-            'apikey': supabase_anon_key,
+            'apikey': supabase_key,
         }
         try:
             resp = http_requests.get(
