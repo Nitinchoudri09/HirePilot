@@ -225,6 +225,9 @@ class HomeView(TemplateView):
     def get(self, request):
         return render(request, 'index.html')
 
+def about_view(request):
+    return render(request, 'about.html')
+
 from .forms import SignupForm
 
 def signup_view(request):
