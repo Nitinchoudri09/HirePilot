@@ -736,8 +736,8 @@
     }
 
     // ── Supabase client ──────────────────────────────────────────────────────
-    const SUPABASE_URL  = 'https://mbugyhaebsauetyywgse.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1idWd5aGFlYnNhdWV0eXl3Z3NlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjg4NjksImV4cCI6MjA5Nzg0NDg2OX0.AO-zo3Sox5aaCS6ZVFIaeJF20NJTXTdPsquHS0u8J9g';
+    const SUPABASE_URL  = '{{ SUPABASE_URL|escapejs }}';
+    const SUPABASE_ANON = '{{ SUPABASE_KEY|escapejs }}';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
     // ── On page load: handle OAuth callback ─────────────────────────────────

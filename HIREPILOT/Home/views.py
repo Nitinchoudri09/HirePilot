@@ -66,6 +66,10 @@ def supabase_auth_callback(request):
         supabase_url = getattr(settings, 'SUPABASE_URL', '').strip()
         supabase_key = getattr(settings, 'SUPABASE_KEY', '').strip()
 
+        print("SUPABASE_URL loaded:", bool(supabase_url))
+        print("SUPABASE_KEY loaded:", bool(supabase_key))
+        print("access token received:", bool(access_token))
+
         if not supabase_url or not supabase_key:
             logger.error('SUPABASE_URL or SUPABASE_KEY is not configured.')
             return JsonResponse(
