@@ -157,14 +157,15 @@ def payment_callback(request):
     razorpay_payment_id = data.get('razorpay_payment_id', '')
     razorpay_signature  = data.get('razorpay_signature', '')
 
-    body = f"{razorpay_order_id}|{razorpay_payment_id}"
-    expected_sig = hmac.new(
-        settings.RAZORPAY_KEY_SECRET.encode(),
-        body.encode(),
-        hashlib.sha256,
-    ).hexdigest()
-
-    if not hmac.compare_digest(expected_sig, razorpay_signature):
+    # Verify signature using Razorpay SDK
+    client = get_razorpay_client()
+    try:
+        client.utility.verify_payment_signature({
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_signature': razorpay_signature
+        })
+    except razorpay.errors.SignatureVerificationError:
         return JsonResponse({'ok': False, 'error': 'Invalid payment signature'}, status=400)
 
     try:
