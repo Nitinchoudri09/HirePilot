@@ -651,25 +651,47 @@
 
     // ── On page load: handle OAuth callback ─────────────────────────────────
     (async () => {
-      const isOAuthCallback =
-        window.location.hash.includes('access_token') ||
-        window.location.search.includes('code=');
+      const hash = window.location.hash;
+      const search = window.location.search;
+      const isImplicit = hash.includes('access_token=');
+      const isPKCE = search.includes('code=');
+      const isOAuthCallback = isImplicit || isPKCE;
+
+      console.log('[HirePilot Debug] Callback check: isImplicit=', isImplicit, 'isPKCE=', isPKCE);
 
       if (isOAuthCallback) {
         const btn = document.getElementById('btn-google-login');
         if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
 
         try {
-          const { data, error } = await _supabase.auth.getSession();
+          let session = null;
 
-          if (error) {
-            console.error('[HirePilot] Supabase getSession error:', error);
-            showAuthError('Google sign-in failed: ' + error.message);
-            resetGoogleBtn();
-            return;
+          if (isPKCE) {
+            console.log('[HirePilot Debug] PKCE Flow detected. Extracting code...');
+            const urlParams = new URLSearchParams(search);
+            const code = urlParams.get('code');
+            if (code) {
+              console.log('[HirePilot Debug] Calling exchangeCodeForSession()...');
+              const { data, error } = await _supabase.auth.exchangeCodeForSession(code);
+              if (error) {
+                console.warn('[HirePilot Debug] exchangeCodeForSession failed (likely auto-exchanged by SDK). Falling back to getSession(). Error:', error);
+                const fallback = await _supabase.auth.getSession();
+                session = fallback.data?.session;
+              } else {
+                session = data.session;
+              }
+            }
+          } else if (isImplicit) {
+            console.log('[HirePilot Debug] Implicit Flow detected. Waiting for getSession()...');
+            const { data, error } = await _supabase.auth.getSession();
+            if (error) {
+              console.error('[HirePilot Debug] getSession error:', error);
+            }
+            session = data?.session;
           }
 
-          const session = data?.session;
+          console.log('[HirePilot Debug] getSession() result. Session exists:', !!session);
+
           if (!session || !session.access_token) {
             console.warn('[HirePilot] No valid session after OAuth redirect (may have been consumed by a refresh).');
             showAuthError('Session expired or already used. Please click “Continue with Google” again.');
@@ -677,17 +699,17 @@
             return;
           }
 
+          console.log('[HirePilot Debug] Session successfully retrieved. Exchanging token with Django...');
           await exchangeTokenWithDjango(session);
 
         } catch (err) {
-          console.error('[HirePilot] Unexpected OAuth callback error:', err);
+          console.error('[HirePilot Debug] Unexpected OAuth callback error:', err);
           showAuthError('An unexpected error occurred. Please try again.');
           resetGoogleBtn();
         } finally {
-          // Always clean the fragment from the URL so F5 doesn't re-trigger the flow
-          if (window.location.hash) {
-            history.replaceState(null, '', window.location.pathname + window.location.search);
-          }
+          // Always clean the URL so F5 doesn't re-trigger the flow
+          console.log('[HirePilot Debug] Cleaning URL hash and search params...');
+          history.replaceState(null, '', window.location.pathname);
         }
       } else {
         // Normal page visit — clear any stale Supabase session
@@ -697,10 +719,12 @@
 
     // ── Trigger Supabase Google OAuth ────────────────────────────────────────
     async function loginWithGoogle() {
+      console.log('[HirePilot Debug] Calling signInWithOAuth()...');
       const btn = document.getElementById('btn-google-login');
       if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
       const existingErr = document.getElementById('auth-error-box');
       if (existingErr) existingErr.remove();
+      
       const { error } = await _supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -709,7 +733,7 @@
         },
       });
       if (error) {
-        console.error('[HirePilot] OAuth initiation error:', error);
+        console.error('[HirePilot Debug] OAuth initiation error:', error);
         showAuthError('Google sign-in error: ' + error.message);
         resetGoogleBtn();
       }
