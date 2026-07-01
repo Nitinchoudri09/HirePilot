@@ -45,3 +45,4 @@ google-auth-oauthlib==1.2.1
 setuptools==69.5.1
 wheel==0.43.0
 razorpay==1.4.2
+sib-api-v3-sdk==7.6.0

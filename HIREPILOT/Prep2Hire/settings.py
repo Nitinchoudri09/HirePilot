@@ -141,15 +141,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Email (Brevo SMTP)
+# Email (Brevo HTTP API / SMTP fallback)
 # ─────────────────────────────────────────────────────────────────────────────
+# Brevo HTTP API (replaces SMTP to avoid Render timeout)
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
+BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', '')
+
+# Keep these for Django's built-in password reset views
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('BREVO_SMTP_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('BREVO_SMTP_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'HirePilot <noreply@hirepilot.com>')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Site URL — used in email links; set to your Render domain in production
@@ -205,6 +210,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'ERROR',
     },
 }
 

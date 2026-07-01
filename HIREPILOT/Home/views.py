@@ -233,6 +233,8 @@ from .forms import SignupForm
 from django.core import signing
 from django.core.mail import send_mail
 
+from Home.email_utils import send_brevo_email
+
 def signup_view(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -244,17 +246,18 @@ def signup_view(request):
             # Generate email verification token
             token = signing.dumps(user.pk, salt='email-verification')
             
-            # Build verification URL
+            # Build verification URL dynamically
             site_url = getattr(settings, 'SITE_URL', 'https://hire-pilot-s2z7.onrender.com').rstrip('/')
             verification_url = f"{site_url}/verify-email/{token}/"
             
-            # Email HTML template
-            html_message = """<!DOCTYPE html>
+            # Build email HTML
+            html_content = f"""
+<!DOCTYPE html>
 <html>
 <body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 30px;">
   <div style="max-width:500px; margin:auto; background:white; border-radius:10px; padding:30px;">
     <h2 style="color:#4f46e5;">Welcome to HirePilot 🚀</h2>
-    <p>Hi {first_name},</p>
+    <p>Hi {user.first_name},</p>
     <p>Thanks for signing up! Please verify your email to activate your account.</p>
     <a href="{verification_url}"
        style="display:inline-block; background:#4f46e5; color:white; padding:12px 24px;
@@ -266,26 +269,20 @@ def signup_view(request):
     </p>
   </div>
 </body>
-</html>""".format(first_name=user.first_name, verification_url=verification_url)
+</html>
+"""
 
-            plain_message = (
-                f"Hi {user.first_name},\n\n"
-                f"Thanks for signing up! Please verify your email to activate your account:\n"
-                f"{verification_url}\n\n"
-                f"This link expires in 24 hours. If you didn't sign up, ignore this email."
+            sent = send_brevo_email(
+                to_email=user.email,
+                to_name=user.first_name,
+                subject="Verify your HirePilot email",
+                html_content=html_content
             )
 
-            # Send verification email using send_mail with html_message
-            try:
-                send_mail(
-                    subject="Welcome to HirePilot 🚀 - Verify Email",
-                    message=plain_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    html_message=html_message,
-                )
-            except Exception as e:
-                logger.error("Failed to send verification email to %s: %s", user.email, str(e))
+            if not sent:
+                messages.error(request,
+                    "Account created but we couldn't send the verification email. "
+                    "Please contact support.")
 
             request.session['verification_email'] = user.email
             return redirect('/verification-sent/')
@@ -616,3 +613,60 @@ def delete_task(request, task_id):
     task = get_object_or_404(UserTask, id=task_id, user=request.user)
     task.delete()
     return redirect('profile_settings')
+
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
+def custom_password_reset_view(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            users = list(form.get_users(email))
+
+            if users:
+                user = users[0]
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
+                
+                # Build reset URL dynamically
+                site_url = getattr(settings, 'SITE_URL', 'https://hire-pilot-s2z7.onrender.com').rstrip('/')
+                reset_url = f"{site_url}/password-reset-confirm/{uid}/{token}/"
+
+                html_content = f"""
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background:#f4f4f4; padding:30px;">
+  <div style="max-width:500px; margin:auto; background:white; border-radius:10px; padding:30px;">
+    <h2 style="color:#4f46e5;">Reset Your Password 🔐</h2>
+    <p>Hi {user.first_name},</p>
+    <p>We received a request to reset your HirePilot password.</p>
+    <a href="{reset_url}"
+       style="display:inline-block; background:#4f46e5; color:white;
+              padding:12px 24px; border-radius:6px;
+              text-decoration:none; margin-top:16px;">
+      Reset My Password
+    </a>
+    <p style="margin-top:24px; color:#888; font-size:12px;">
+      This link expires in 1 hour. If you didn't request this, ignore it.
+    </p>
+  </div>
+</body>
+</html>
+"""
+
+                send_brevo_email(
+                    to_email=user.email,
+                    to_name=user.first_name,
+                    subject="Reset your HirePilot password",
+                    html_content=html_content
+                )
+
+            # Always redirect to done page (don't reveal whether email exists)
+            return redirect('/password-reset/done/')
+    else:
+        form = PasswordResetForm()
+
+    return render(request, 'accounts/password_reset.html', {'form': form})

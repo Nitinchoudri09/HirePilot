@@ -18,16 +18,10 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 from django.contrib.auth import views as auth_views
+from Home.views import custom_password_reset_view
 
 urlpatterns += [
-    path('password-reset/',
-         auth_views.PasswordResetView.as_view(
-             template_name='accounts/password_reset.html',
-             email_template_name='emails/password_reset_email.html',
-             html_email_template_name='emails/password_reset_email.html',
-             subject_template_name='emails/password_reset_subject.txt',
-             success_url='/password-reset/done/'
-         ), name='password_reset'),
+    path('password-reset/', custom_password_reset_view, name='password_reset'),
 
     path('password-reset/done/',
          auth_views.PasswordResetDoneView.as_view(

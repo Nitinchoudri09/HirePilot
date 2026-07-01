@@ -1,8 +1,8 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.core import mail
 from django.core.signing import dumps
+from unittest.mock import patch
 
 class EmailVerificationTests(TestCase):
     def setUp(self):
@@ -10,7 +10,10 @@ class EmailVerificationTests(TestCase):
         self.signup_url = reverse('signup')
         self.login_url = reverse('login')
 
-    def test_signup_creates_inactive_user_and_sends_email(self):
+    @patch('Home.views.send_brevo_email')
+    def test_signup_creates_inactive_user_and_sends_email(self, mock_send_email):
+        mock_send_email.return_value = True
+
         # 1. Sign up a new user
         response = self.client.post(self.signup_url, {
             'username': 'newuser',
@@ -30,15 +33,13 @@ class EmailVerificationTests(TestCase):
         self.assertEqual(user.last_name, 'Doe')
         self.assertEqual(user.email, 'john@example.com')
 
-        # Verify an email was sent
-        self.assertEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-        self.assertEqual(email.to, ['john@example.com'])
-        self.assertIn("Welcome to HirePilot", email.subject)
-        
-        # Check that the verification URL is in the HTML alternative
-        html_alternative = email.alternatives[0][0] if email.alternatives else email.body
-        self.assertIn("verify-email", html_alternative)
+        # Verify that send_brevo_email was called correctly
+        mock_send_email.assert_called_once()
+        call_kwargs = mock_send_email.call_args[1]
+        self.assertEqual(call_kwargs['to_email'], 'john@example.com')
+        self.assertEqual(call_kwargs['to_name'], 'John')
+        self.assertEqual(call_kwargs['subject'], 'Verify your HirePilot email')
+        self.assertIn("verify-email", call_kwargs['html_content'])
 
     def test_login_fails_for_inactive_user(self):
         # Create an inactive user
@@ -106,20 +107,27 @@ class PasswordResetTests(TestCase):
             first_name='Active'
         )
 
-    def test_password_reset_sends_email_and_does_not_reveal_non_existent(self):
+    @patch('Home.views.send_brevo_email')
+    def test_password_reset_sends_email_and_does_not_reveal_non_existent(self, mock_send_email):
+        mock_send_email.return_value = True
+
         # 1. Reset for existing user
         response = self.client.post(self.reset_url, {'email': 'active@example.com'})
         self.assertRedirects(response, reverse('password_reset_done'))
-        self.assertEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-        self.assertEqual(email.to, ['active@example.com'])
-        self.assertIn("Reset your HirePilot password", email.subject)
         
-        # Clear outbox
-        mail.outbox = []
+        # Verify that send_brevo_email was called
+        mock_send_email.assert_called_once()
+        call_kwargs = mock_send_email.call_args[1]
+        self.assertEqual(call_kwargs['to_email'], 'active@example.com')
+        self.assertEqual(call_kwargs['to_name'], 'Active')
+        self.assertEqual(call_kwargs['subject'], 'Reset your HirePilot password')
+        self.assertIn("password-reset-confirm", call_kwargs['html_content'])
+        
+        # Reset mock
+        mock_send_email.reset_mock()
 
         # 2. Reset for non-existent user
         response = self.client.post(self.reset_url, {'email': 'nonexistent@example.com'})
         self.assertRedirects(response, reverse('password_reset_done'))
         # Should not send email
-        self.assertEqual(len(mail.outbox), 0)
+        mock_send_email.assert_not_called()
