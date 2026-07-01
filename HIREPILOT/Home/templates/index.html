@@ -45,12 +45,12 @@
       padding: 10px 16px;
       display: block;
       text-decoration: none;
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
     .dropdown-content a:hover {
       background-color: var(--platinum);
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
     .dropdown-trigger {
@@ -87,7 +87,7 @@
     }
 
     .search-modal-content {
-      background: var(--surface);
+      background: var(--card-bg);
       width: 90%;
       max-width: 600px;
       border-radius: 16px;
@@ -117,7 +117,7 @@
     .search-modal-header h3 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: var(--text-main);
       margin: 0;
     }
 
@@ -132,7 +132,7 @@
     }
 
     .search-close-btn:hover {
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
     .search-input-wrapper {
@@ -178,7 +178,7 @@
       border-radius: 20px;
       font-size: 0.9rem;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: #4b5563;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -240,105 +240,29 @@
         padding: 8px 12px;
       }
     }
-    /* Responsive overrides for homepage (Page 2) */
+    /* Responsive Hero Section */
     @media (max-width: 768px) {
-      .header .container {
-        padding: 0 16px !important;
-      }
-      
-      /* Hero Section overrides */
-      .section.hero {
-        padding: 40px 16px !important;
-      }
-      .section.hero .container {
-        flex-direction: column !important;
-        align-items: stretch !important;
-      }
       .hero-content {
-        max-width: 100% !important;
         padding-right: 0 !important;
-        margin-bottom: 20px !important;
         text-align: center !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
       }
-      .hero-content .h1.section-title {
-        font-size: 28px !important;
+      .hero-title {
+        font-size: 2.8rem !important;
         line-height: 1.2 !important;
       }
       .hero-text {
-        font-size: 14px !important;
-        max-width: 100% !important;
-        margin-bottom: 20px !important;
-        line-height: 1.6 !important;
+        font-size: 1.1rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
       }
       .hero-content .btn {
-        display: flex !important;
         width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        margin-bottom: 12px !important;
-        padding: 14px 20px !important;
-        font-size: 1rem !important;
+      }
+      .hero-content > div[style*="gap: 18px"] {
         justify-content: center !important;
       }
-      .hero-content > div[style*="gap: 18px"],
       .hero-content > div[style*="gap: 30px"] {
-        flex-direction: column !important;
-        gap: 10px !important;
-      }
-      .hero-banner {
-        display: none !important; /* Hide hero banner on mobile to keep layout clean */
-      }
-
-      /* Features section overrides */
-      .category .grid-list {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-      }
-
-      /* Stats section overrides */
-      .stats .grid-list {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 15px !important;
-      }
-
-      /* Testimonials section overrides */
-      .testimonials div[style*="display: grid"] {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-      }
-
-      /* Job updates section overrides */
-      .blog .grid-list {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-      }
-
-      /* Footer overrides */
-      .footer-top.container.grid-list {
-        grid-template-columns: 1fr !important;
-        gap: 30px !important;
-      }
-      .newsletter-form {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-      }
-      .newsletter-form .input-field {
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-      .newsletter-form .btn {
-        width: 100% !important;
-        max-width: 100% !important;
         justify-content: center !important;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .stats .grid-list {
-        grid-template-columns: 1fr !important;
       }
     }
   </style>
@@ -442,7 +366,7 @@
 
       <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
         <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="HirePilot Compass Logo" style="width: 45px; height: 45px; object-fit: contain;">
-        <span style="font-size: 28px; color: var(--text-primary); font-family: 'League Spartan', sans-serif; font-weight: 800; letter-spacing: -0.5px;">HirePilot</span>
+        <span style="font-size: 28px; color: var(--text-main); font-family: 'League Spartan', sans-serif; font-weight: 800; letter-spacing: -0.5px;">HirePilot</span>
       </a>
 
       <nav class="navbar" data-navbar>
@@ -450,7 +374,7 @@
         <div class="wrapper">
           <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
             <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="HirePilot Compass Logo" style="width: 40px; height: 40px; object-fit: contain;">
-            <span style="font-size: 26px; color: var(--text-primary); font-family: 'League Spartan', sans-serif; font-weight: 800;">HirePilot</span>
+            <span style="font-size: 26px; color: var(--text-main); font-family: 'League Spartan', sans-serif; font-weight: 800;">HirePilot</span>
           </a>
 
           <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
@@ -461,40 +385,40 @@
         <ul class="navbar-list">
 
           <li class="navbar-item">
-            <a href="/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Home</a>
+            <a href="/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Home</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/about/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">About Us</a>
+            <a href="/about/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">About Us</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/jobs/available-jobs/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Jobs</a>
+            <a href="/jobs/available-jobs/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Jobs</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/jobs/matches/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600; text-shadow: 0 0 10px rgba(99,102,241,0.5);">AI Matches 🌟</a>
+            <a href="/jobs/matches/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600; text-shadow: 0 0 10px rgba(99,102,241,0.5);">AI Matches 🌟</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/jobs/referrals/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Referrals</a>
+            <a href="/jobs/referrals/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Referrals</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/resume-analyzer/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Resume</a>
+            <a href="/resume-analyzer/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Resume</a>
           </li>
 
 
           <li class="navbar-item">
-            <a href="/skill-development/quizzes/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Quiz</a>
+            <a href="/skill-development/quizzes/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Quiz</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/coding/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Code Practice</a>
+            <a href="/coding/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Code Practice</a>
           </li>
 
           <li class="navbar-item">
-            <a href="/connect/" class="navbar-link" data-nav-link style="color: var(--text-primary); font-weight: 600;">Community</a>
+            <a href="/connect/" class="navbar-link" data-nav-link style="color: var(--text-main); font-weight: 600;">Community</a>
           </li>
 
         </ul>
@@ -505,12 +429,12 @@
 
         <!-- Theme toggle removed as requested
         <button class="header-action-btn theme-toggle-btn" aria-label="toggle theme" title="Toggle Theme" onclick="toggleTheme()" id="themeToggleBtn">
-          <ion-icon name="moon-outline" aria-hidden="true" style="color: var(--text-primary);"></ion-icon>
+          <ion-icon name="moon-outline" aria-hidden="true" style="color: var(--text-main);"></ion-icon>
         </button>
         -->
 
         <button class="header-action-btn" aria-label="toggle search" title="Search" onclick="openSearchModal()">
-          <ion-icon name="search-outline" aria-hidden="true" style="color: var(--text-primary);"></ion-icon>
+          <ion-icon name="search-outline" aria-hidden="true" style="color: var(--text-main);"></ion-icon>
         </button>
             {% if user.is_authenticated %}
                 <div class="dropdown" id="dropdownMenu" style="margin-left: 10px;">
@@ -532,7 +456,7 @@
               <a href="{% url 'login' %}" class="btn" style="background: transparent; color: #2563eb; border: 2.5px solid #2563eb; border-radius: 50px; padding: 14px 30px; font-weight: 700; font-size: 1.2rem; margin-left: 10px; text-decoration: none; white-space: nowrap; display: inline-block;">Login / Signup ➔</a>
             {% endif %}
         <button class="header-action-btn" aria-label="open menu" data-nav-toggler>
-          <ion-icon name="menu-outline" aria-hidden="true" style="color: var(--text-primary);"></ion-icon>
+          <ion-icon name="menu-outline" aria-hidden="true" style="color: var(--text-main);"></ion-icon>
         </button>
 
       </div>
@@ -549,7 +473,7 @@
       -->
 
       <section class="section hero" id="home" aria-label="home"
-        style="background: var(--dark-bg); padding-top: 160px; padding-bottom: 120px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; min-height: 80vh;">
+        style="background: var(--body-bg); padding-top: 160px; padding-bottom: 120px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; min-height: 80vh;">
         
         <!-- Subtle background shapes mimicking the Purdue theme -->
         <div style="position: absolute; top: 0; left: -100px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(220,245,255,0.8) 0%, rgba(255,255,255,0) 60%); border-radius: 50%; z-index: 0;"></div>
@@ -564,20 +488,20 @@
             </p>
 
             <!-- HERO UPDATE -->
-            <h1 class="h1 section-title" style="font-size: 4.5rem; font-weight: 800; color: var(--text-light); line-height: 1.1; margin-bottom: 25px; font-family: 'League Spartan', sans-serif; letter-spacing: -1px;">
+            <h1 class="h1 section-title" style="font-size: 4.5rem; font-weight: 800; color: var(--text-main); line-height: 1.1; margin-bottom: 25px; font-family: 'League Spartan', sans-serif; letter-spacing: -1px;">
               Know exactly why your resume gets rejected — before a recruiter does.
             </h1>
 
-            <p class="hero-text" style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.7; max-width: 550px;">
+            <p class="hero-text" style="font-size: 1.25rem; color: #4b5563; margin-bottom: 40px; line-height: 1.7; max-width: 550px;">
               Get your free ATS score in 10 seconds. No signup, no card, just answers.
             </p>
 
             <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 40px;">
-              <a href="/resume-analyzer/" class="btn" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: white; padding: 18px 36px; border-radius: var(--radius-sm); font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 8px 24px rgba(37,99,235,0.3);">
+              <a href="/resume-analyzer/" class="btn" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 18px 36px; border-radius: 50px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 8px 24px rgba(37,99,235,0.3);">
                 Check My Resume Score 
                 <span>➔</span>
               </a>
-              <a href="#how-it-works" class="btn" style="display: inline-flex; align-items: center; justify-content: center; background: var(--surface); color: #2563eb; padding: 18px 36px; border-radius: 50px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: all 0.3s ease; border: 2.5px solid #2563eb;">
+              <a href="#how-it-works" class="btn" style="display: inline-flex; align-items: center; justify-content: center; background: var(--card-bg); color: #2563eb; padding: 18px 36px; border-radius: 50px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: all 0.3s ease; border: 2.5px solid #2563eb;">
                 See How It Works
               </a>
             </div>
@@ -586,11 +510,11 @@
             <div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 10px;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <div style="font-weight: 600; color: var(--text-primary); font-size: 1.1rem;">4500+ <span style="font-size: 0.9rem; font-weight: 500; color: #6b7280;">Online Courses</span></div>
+                <div style="font-weight: 600; color: var(--text-main); font-size: 1.1rem;">4500+ <span style="font-size: 0.9rem; font-weight: 500; color: #6b7280;">Online Courses</span></div>
               </div>
               <div style="display: flex; align-items: center; gap: 10px;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                <div style="font-weight: 600; color: var(--text-primary); font-size: 1.1rem;">7500+ <span style="font-size: 0.9rem; font-weight: 500; color: #6b7280;">Active Students</span></div>
+                <div style="font-weight: 600; color: var(--text-main); font-size: 1.1rem;">7500+ <span style="font-size: 0.9rem; font-weight: 500; color: #6b7280;">Active Students</span></div>
               </div>
             </div>
 
@@ -610,17 +534,17 @@
       </section>
 
       <!-- NEW: TRY IT FREE SECTION -->
-      <section class="section" id="how-it-works" style="background: var(--surface); padding: 80px 0;">
+      <section class="section" id="how-it-works" style="background: var(--card-bg); padding: 80px 0;">
         <div class="container">
           <div style="text-align: center; margin-bottom: 40px;">
             <h2 class="h2 section-title">See your score before you sign up</h2>
             <p class="section-text" style="max-width: 600px; margin: 0 auto;">Upload your resume below to get an instant sneak peek at your ATS score.</p>
           </div>
           
-          <div style="max-width: 700px; margin: 0 auto; background: var(--surface-alt); border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;">
-            <div id="upload-box" style="border: 2px dashed #9ca3af; border-radius: 12px; padding: 40px 20px; cursor: pointer; transition: all 0.3s; background: var(--surface);">
+          <div style="max-width: 700px; margin: 0 auto; background: var(--body-bg); border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;">
+            <div id="upload-box" style="border: 2px dashed #9ca3af; border-radius: 12px; padding: 40px 20px; cursor: pointer; transition: all 0.3s; background: var(--card-bg);">
               <ion-icon name="cloud-upload-outline" style="font-size: 3rem; color: #2563eb; margin-bottom: 15px;"></ion-icon>
-              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">Drag & Drop your resume here</h3>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 10px; color: var(--text-main);">Drag & Drop your resume here</h3>
               <p style="color: #6b7280; font-size: 0.95rem; margin-bottom: 20px;">Supported formats: PDF, DOCX</p>
               <input type="file" id="mock-resume-upload" style="display: none;" accept=".pdf,.doc,.docx">
               <button class="btn" onclick="document.getElementById('mock-resume-upload').click()" style="background: #2563eb; color: white; padding: 10px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;">Browse Files</button>
@@ -631,7 +555,7 @@
               <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 30px;">
                 <div style="width: 100px; height: 100px; border-radius: 50%; border: 6px solid #eab308; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: #eab308;">72</div>
                 <div>
-                  <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 5px;">Needs Improvement</h3>
+                  <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 5px;">Needs Improvement</h3>
                   <p style="color: #6b7280; margin: 0;">Your resume passed basic checks, but needs optimization.</p>
                 </div>
               </div>
@@ -787,7 +711,7 @@
       -->
 
       <!-- NEW: TESTIMONIALS -->
-      <section class="section testimonials" style="background: var(--surface-alt); padding: 80px 0;">
+      <section class="section testimonials" style="background: var(--body-bg); padding: 80px 0;">
         <div class="container">
           <p class="section-subtitle" style="text-align: center;">Success Stories</p>
           <h2 class="h2 section-title" style="text-align: center; margin-bottom: 50px;">What students are saying</h2>
@@ -795,45 +719,45 @@
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
             
             <!-- PLACEHOLDER TESTIMONIAL 1 -->
-            <div style="background: var(--surface); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative;">
+            <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative;">
               <div style="color: #2563eb; font-size: 3rem; position: absolute; top: 10px; right: 20px; opacity: 0.2;">"</div>
-              <p style="font-size: 1.05rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">
+              <p style="font-size: 1.05rem; color: var(--text-main); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">
                 "Fixed 6 ATS issues the analyzer flagged, reapplied to the same job, got shortlisted in a week."
               </p>
               <div style="display: flex; align-items: center; gap: 15px;">
                 <div style="width: 50px; height: 50px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #64748b;">A</div>
                 <div>
-                  <h4 style="font-weight: 700; color: var(--text-primary); margin-bottom: 2px;">Ananya</h4>
+                  <h4 style="font-weight: 700; color: var(--text-main); margin-bottom: 2px;">Ananya</h4>
                   <p style="font-size: 0.85rem; color: #6b7280;">Final-year CSE</p>
                 </div>
               </div>
             </div>
 
             <!-- PLACEHOLDER TESTIMONIAL 2 -->
-            <div style="background: var(--surface); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative;">
+            <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative;">
               <div style="color: #2563eb; font-size: 3rem; position: absolute; top: 10px; right: 20px; opacity: 0.2;">"</div>
-              <p style="font-size: 1.05rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">
+              <p style="font-size: 1.05rem; color: var(--text-main); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">
                 "I didn't know what a roadmap even meant for my career. HirePilot gave me one, step by step."
               </p>
               <div style="display: flex; align-items: center; gap: 15px;">
                 <div style="width: 50px; height: 50px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #64748b;">R</div>
                 <div>
-                  <h4 style="font-weight: 700; color: var(--text-primary); margin-bottom: 2px;">Rohit</h4>
+                  <h4 style="font-weight: 700; color: var(--text-main); margin-bottom: 2px;">Rohit</h4>
                   <p style="font-size: 0.85rem; color: #6b7280;">B.Com Graduate</p>
                 </div>
               </div>
             </div>
 
             <!-- PLACEHOLDER TESTIMONIAL 3 -->
-            <div style="background: var(--surface); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative;">
+            <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative;">
               <div style="color: #2563eb; font-size: 3rem; position: absolute; top: 10px; right: 20px; opacity: 0.2;">"</div>
-              <p style="font-size: 1.05rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">
+              <p style="font-size: 1.05rem; color: var(--text-main); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">
                 "Practiced 20 coding problems here before my interview. Got the offer."
               </p>
               <div style="display: flex; align-items: center; gap: 15px;">
                 <div style="width: 50px; height: 50px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #64748b;">P</div>
                 <div>
-                  <h4 style="font-weight: 700; color: var(--text-primary); margin-bottom: 2px;">Priya</h4>
+                  <h4 style="font-weight: 700; color: var(--text-main); margin-bottom: 2px;">Priya</h4>
                   <p style="font-size: 0.85rem; color: #6b7280;">ECE Student</p>
                 </div>
               </div>
@@ -1078,7 +1002,7 @@
     - #FOOTER
   -->
 
-  <footer style="background: var(--dark-bg); color: var(--text-secondary); padding: 48px 0;">
+  <footer class="footer" style="background-image: url('{% static 'assets/images/footer-bg.png' %}')">
 
     <div class="footer-top section">
       <div class="container grid-list">

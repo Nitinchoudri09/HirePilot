@@ -12,8 +12,8 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-dark: var(--dark-bg);
-      --primary: #4f46e5;
+      --bg-dark: #050816;
+      --primary: #3B82F6;
       --purple: #8B5CF6;
       --cyan: #06B6D4;
       --text-white: #F8FAFC;
@@ -24,7 +24,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--surface-alt);
+      background-color: var(--bg-dark);
       background-image: 
         radial-gradient(circle at 15% 25%, rgba(139, 92, 246, 0.15), transparent 40%), 
         radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.15), transparent 40%);
@@ -47,9 +47,6 @@
       display: flex;
       flex-direction: column;
       position: relative;
-    
-      background-color: var(--dark-bg);
-      color: var(--text-light);
     }
 
     .right-pane {
@@ -59,8 +56,6 @@
       justify-content: center;
       padding: 2rem;
       position: relative;
-    
-      background-color: var(--surface);
     }
 
     /* ── Left Pane Content ── */
@@ -264,8 +259,6 @@
       font-weight: 600;
       color: #cbd5e1;
       margin-bottom: 8px;
-    
-      color: var(--text-primary);
     }
 
     .input-wrapper { position: relative; }
@@ -307,10 +300,6 @@
       font-family: inherit;
       outline: none;
       transition: all 0.25s ease;
-    
-      background-color: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
     }
 
     .form-group input::placeholder { color: #64748b; }
@@ -319,9 +308,6 @@
       border-color: var(--primary);
       background: rgba(0,0,0,0.4);
       box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-    
-      border-color: var(--primary) !important;
-      box-shadow: 0 0 0 3px var(--primary-light) !important;
     }
     
     .form-options {
@@ -442,17 +428,12 @@
     /* ── Responsive ── */
     @media (max-width: 968px) {
       .split-container { flex-direction: column; }
-      .left-pane { padding: 2rem; flex: 0 1 auto; align-items: center; text-align: center; 
-      background-color: var(--dark-bg);
-      color: var(--text-light);
-    }
+      .left-pane { padding: 2rem; flex: 0 1 auto; align-items: center; text-align: center; }
       .hero-subtitle { margin: 0 auto 2rem; }
       .feature-list { display: none; }
       .illustration-wrapper { display: none; }
       .trust-section { display: none; }
-      .right-pane { padding: 1rem; align-items: flex-start; 
-      background-color: var(--surface);
-    }
+      .right-pane { padding: 1rem; align-items: flex-start; }
       .auth-card { padding: 2rem; }
     }
 
@@ -460,10 +441,7 @@
       .split-container { flex-direction: column; }
       .left-pane {
         display: none; /* Hide decorative pane completely on mobile */
-      
-      background-color: var(--dark-bg);
-      color: var(--text-light);
-    }
+      }
       .right-pane {
         flex: 1;
         width: 100%;
@@ -471,9 +449,7 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-      
-      background-color: var(--surface);
-    }
+      }
       .auth-card {
         padding: 2rem 1.5rem;
         max-width: 100%;
@@ -483,18 +459,12 @@
       /* Prevent iOS auto-zoom on input focus */
       .form-group input {
         font-size: 16px !important;
-      
-      background-color: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-    }
+      }
       button[type="submit"] { font-size: 1rem; padding: 14px; }
     }
 
     @media (max-width: 390px) {
-      .right-pane { padding: 1.5rem 1rem; 
-      background-color: var(--surface);
-    }
+      .right-pane { padding: 1.5rem 1rem; }
       .auth-card { padding: 1.5rem 1.25rem; border-radius: 16px; }
       .auth-header img { width: 40px; height: 40px; }
       .auth-header h2 { font-size: 1.4rem; }
