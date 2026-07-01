@@ -13,16 +13,16 @@
 
   <style>
     body {
-      font-family: var(--font, 'Inter', sans-serif);
-      background-color: var(--surface-alt, #f8fafc);
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
       padding: 30px;
     }
 
     h1 {
       text-align: center;
-      color: var(--text-primary, #0f172a);
-      font-size: 32px;
-      font-weight: 700;
+      color: #0d47a1;
+      font-size: 28px;
+      font-family: 'Inter', sans-serif;
       margin-bottom: 30px;
     }
 
@@ -35,39 +35,37 @@
     }
 
     .job-card {
-      background: var(--surface, #ffffff);
-      border-radius: var(--radius, 12px);
-      border: 1px solid var(--border, #e2e8f0);
-      box-shadow: var(--shadow, 0 4px 24px rgba(0,0,0,0.08));
-      padding: 24px;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
-      font-size: 14px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 16px;
+      transition: 0.3s ease;
+      font-size: 13px;
     }
 
     .job-card:hover {
-      box-shadow: var(--shadow-hover, 0 8px 32px rgba(79,70,229,0.15));
-      transform: translateY(-2px);
+      transform: translateY(-4px);
     }
 
     .job-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
-      color: var(--text-primary, #0f172a);
+      color: #1a237e;
     }
 
     .company-name,
     .location {
-      font-size: 13px;
-      color: var(--text-secondary, #64748b);
+      font-size: 12px;
+      color: #555;
       margin-top: 6px;
     }
 
     .show-more {
       margin-top: 10px;
       font-size: 13px;
-      color: var(--primary, #4f46e5);
+      color: #1976d2;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
     }
 
     /* Job Details Modal */
@@ -83,29 +81,25 @@
     }
 
     .modal-content {
-      background-color: var(--surface, #fff);
+      background-color: #fff;
       padding: 24px;
       width: 550px;
       max-height: 85vh;
       overflow-y: auto;
-      border-radius: var(--radius, 12px);
-      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 14px;
       position: relative;
       animation: fadeIn 0.3s ease;
-      box-shadow: var(--shadow-hover, 0 8px 32px rgba(79,70,229,0.15));
     }
 
     .modal-content h2 {
       font-size: 18px;
-      color: var(--text-primary, #0f172a);
+      color: #0d47a1;
       margin-bottom: 6px;
-      font-weight: 700;
     }
 
     .modal-content h4 {
       font-size: 14px;
       margin-top: 0;
-      color: var(--text-secondary, #64748b);
     }
 
     .close {
@@ -115,27 +109,18 @@
       font-size: 20px;
       font-weight: bold;
       cursor: pointer;
-      color: var(--text-secondary, #64748b);
-      transition: color 0.2s ease;
-    }
-    .close:hover {
-      color: var(--text-primary, #0f172a);
     }
 
     .apply-btn {
-      background-color: var(--primary, #4f46e5);
+      background-color: #0d47a1;
       color: #fff;
-      padding: 10px 24px;
+      padding: 8px 14px;
       border: none;
-      border-radius: var(--radius-sm, 8px);
+      border-radius: 6px;
       margin-top: 16px;
-      font-weight: 600;
-      font-size: 14px;
+      font-weight: 500;
+      font-size: 13px;
       cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .apply-btn:hover {
-      background-color: var(--primary-hover, #4338ca);
     }
 
     @keyframes fadeIn {
@@ -144,21 +129,19 @@
     }
 
     .success-content {
-      background-color: var(--surface, #fff);
+      background-color: #fff;
       padding: 20px 30px;
       width: 280px;
       text-align: center;
-      border-radius: var(--radius, 12px);
-      border: 1px solid var(--border, #e2e8f0);
-      box-shadow: var(--shadow, 0 4px 24px rgba(0,0,0,0.08));
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
       animation: fadeIn 0.3s ease;
     }
 
     .success-content h2 {
-      color: var(--success, #10b981);
+      color: green;
       font-size: 16px;
       margin: 0;
-      font-weight: 700;
     }
 
     /* Filters & Search */
@@ -168,42 +151,35 @@
       gap: 15px;
       max-width: 1200px;
       margin: 0 auto 30px auto;
-      background: var(--surface, white);
+      background: white;
       padding: 20px;
-      border-radius: var(--radius, 12px);
-      border: 1px solid var(--border, #e2e8f0);
-      box-shadow: var(--shadow, 0 4px 24px rgba(0,0,0,0.08));
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .filter-bar input, .filter-bar select {
       flex: 1;
       min-width: 200px;
       padding: 10px 15px;
-      border: 1px solid var(--border, #e2e8f0);
-      border-radius: var(--radius-sm, 8px);
+      border: 1px solid #ccc;
+      border-radius: 6px;
       font-family: inherit;
       font-size: 14px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .filter-bar input:focus, .filter-bar select:focus {
-      border-color: var(--primary, #4f46e5);
-      box-shadow: 0 0 0 3px var(--primary-light, #ede9fe);
-      outline: none;
     }
 
     .filter-bar button {
-      background: var(--primary, #4f46e5);
+      background: #1a237e;
       color: white;
       border: none;
-      padding: 10px 24px;
-      border-radius: var(--radius-sm, 8px);
+      padding: 10px 20px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      transition: background 0.2s ease;
+      transition: background 0.2s;
     }
 
     .filter-bar button:hover {
-      background: var(--primary-hover, #4338ca);
+      background: #0d47a1;
     }
 
     /* Pagination */
@@ -216,20 +192,18 @@
     }
 
     .pagination button {
-      background: var(--surface, white);
-      border: 1px solid var(--border, #e2e8f0);
+      background: white;
+      border: 1px solid #ccc;
       padding: 8px 16px;
-      border-radius: var(--radius-sm, 8px);
+      border-radius: 6px;
       cursor: pointer;
       font-family: inherit;
       font-weight: 500;
-      transition: all 0.2s ease;
-      color: var(--text-primary, #0f172a);
+      transition: 0.2s;
     }
 
     .pagination button:hover:not(:disabled) {
-      background: var(--surface-alt, #f8fafc);
-      border-color: var(--primary, #4f46e5);
+      background: #f0f2f5;
     }
 
     .pagination button:disabled {
@@ -242,7 +216,6 @@
       align-items: center;
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-primary, #0f172a);
     }
 
     @media (max-width: 992px) {
