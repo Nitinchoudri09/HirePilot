@@ -239,103 +239,22 @@ def signup_view(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            
-            # Generate email verification token
-            token = signing.dumps(user.pk, salt='email-verification')
-            
-            # Build verification URL dynamically
-            site_url = getattr(settings, 'SITE_URL', 'https://hire-pilot-s2z7.onrender.com').rstrip('/')
-            verification_url = f"{site_url}/verify-email/{token}/"
-            
-            # Build email HTML
-            html_content = f"""
-<!DOCTYPE html>
-<html>
-<body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 30px;">
-  <div style="max-width:500px; margin:auto; background:white; border-radius:10px; padding:30px;">
-    <h2 style="color:#4f46e5;">Welcome to HirePilot 🚀</h2>
-    <p>Hi {user.first_name},</p>
-    <p>Thanks for signing up! Please verify your email to activate your account.</p>
-    <a href="{verification_url}"
-       style="display:inline-block; background:#4f46e5; color:white; padding:12px 24px;
-              border-radius:6px; text-decoration:none; margin-top:16px;">
-      Verify My Email
-    </a>
-    <p style="margin-top:24px; color:#888; font-size:12px;">
-      This link expires in 24 hours. If you didn't sign up, ignore this email.
-    </p>
-  </div>
-</body>
-</html>
-"""
-
-            sent = send_brevo_email(
-                to_email=user.email,
-                to_name=user.first_name,
-                subject="Verify your HirePilot email",
-                html_content=html_content
-            )
-
-            if not sent:
-                messages.error(request,
-                    "Account created but we couldn't send the verification email. "
-                    "Please contact support.")
-
-            request.session['verification_email'] = user.email
-            return redirect('/verification-sent/')
+            user = form.save()
+            auth_login(request, user, backend='Home.backends.EmailOrUsernameModelBackend')
+            return redirect('dashboard')
     else:
         form = SignupForm()
     return render(request, 'signup.html', {'form': form})
-
-def verification_sent_view(request):
-    email = request.session.get('verification_email', '')
-    return render(request, 'accounts/verification_sent.html', {'email': email})
-
-def verify_email_view(request, token):
-    try:
-        user_pk = signing.loads(token, salt='email-verification', max_age=86400)
-        user = User.objects.get(pk=user_pk)
-        user.is_active = True
-        user.save()
-        auth_login(request, user, backend='Home.backends.EmailOrUsernameModelBackend')
-        messages.success(request, 'Email verified! Welcome to HirePilot 🎉')
-        return redirect('/dashboard/')
-    except signing.SignatureExpired:
-        return render(request, 'accounts/verification_failed.html',
-                      {'error': 'expired'})
-    except (signing.BadSignature, User.DoesNotExist):
-        return render(request, 'accounts/verification_failed.html',
-                      {'error': 'invalid'})
 
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('/dashboard/')
 
-    from django.contrib.auth import authenticate, login as auth_login
+    from django.contrib.auth import login as auth_login
     from django.contrib.auth.forms import AuthenticationForm
-    from django.contrib.auth import get_user_model
-    from django.db.models import Q
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
-        username = request.POST.get('username', '').strip()
-        password = request.POST.get('password', '')
-
-        # Authenticate manually to handle unverified is_active check
-        UserModel = get_user_model()
-        try:
-            user = UserModel.objects.filter(Q(username__iexact=username) | Q(email__iexact=username)).first()
-            if user is not None and user.check_password(password):
-                if not user.is_active:
-                    messages.error(request,
-                        'Please verify your email before logging in. Check your inbox (and spam folder).')
-                    return render(request, 'accounts/login.html', {'form': form})
-        except Exception:
-            pass
-
         if form.is_valid():
             auth_login(request, form.get_user())
             return redirect('/dashboard/')

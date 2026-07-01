@@ -39,10 +39,3 @@ urlpatterns += [
              template_name='accounts/password_reset_complete.html'
          ), name='password_reset_complete'),
 ]
-
-from Home.views import verify_email_view, verification_sent_view
-
-urlpatterns += [
-    path('verify-email/<str:token>/', verify_email_view, name='verify_email'),
-    path('verification-sent/', verification_sent_view, name='verification_sent'),
-]
