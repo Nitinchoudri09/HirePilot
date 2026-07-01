@@ -39,3 +39,31 @@ class UserTaskForm(forms.ModelForm):
     class Meta:
         model = UserTask
         fields = ('title',)
+
+from django.contrib.auth.forms import AuthenticationForm
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+
+class CustomAuthenticationForm(AuthenticationForm):
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username and password:
+            UserModel = get_user_model()
+            try:
+                user = UserModel.objects.get(Q(username__iexact=username) | Q(email__iexact=username))
+            except UserModel.DoesNotExist:
+                user = None
+            except UserModel.MultipleObjectsReturned:
+                user = UserModel.objects.filter(Q(username__iexact=username) | Q(email__iexact=username)).first()
+
+            if user is not None:
+                if user.check_password(password):
+                    if not user.is_active:
+                        raise forms.ValidationError(
+                            "Please verify your email before logging in. Check your inbox.",
+                            code='inactive',
+                        )
+            
+        return super().clean()

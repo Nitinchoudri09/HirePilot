@@ -8,7 +8,7 @@ urlpatterns = [
     path('about/', views.about_view, name='about'),
     path('force-populate/', views.force_populate_db, name='force_populate_db'),
     path('signup/', views.signup_view, name='signup'),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('login/', views.login_view, name='login'),
     path('logout/', views.custom_logout, name='logout'),
     path('delete-account/', views.delete_account, name='delete_account'),
     # Supabase Auth — called by JS frontend after Supabase OAuth completes
@@ -21,23 +21,6 @@ urlpatterns = [
     path('connect/like/<int:post_id>/', views.like_post, name='like_post'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('change-password/', auth_views.PasswordChangeView.as_view(template_name='change_password.html', success_url='/dashboard/'), name='change_password'),
-    
-    # Password Reset URLs — using CustomPasswordResetView for robust SMTP error handling
-    path('password-reset/', 
-         views.CustomPasswordResetView.as_view(),
-         name='password_reset'),
-    path('password-reset/done/', 
-         auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), 
-         name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', 
-         auth_views.PasswordResetConfirmView.as_view(
-             template_name='password_reset_confirm.html',
-             success_url='/password-reset-complete/'
-         ), 
-         name='password_reset_confirm'),
-    path('password-reset-complete/', 
-         auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), 
-         name='password_reset_complete'),
     
     path('profile/', views.profile_settings_view, name='profile_settings'),
     path('profile/add-task/', views.add_task, name='add_task'),

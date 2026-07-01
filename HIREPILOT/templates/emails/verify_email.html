@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 30px;">
+  <div style="max-width: 500px; margin: auto; background: white; border-radius: 10px; padding: 30px;">
+    <h2 style="color: #4f46e5;">Welcome to HirePilot 🚀</h2>
+    <p>Hi {{ first_name }},</p>
+    <p>Thanks for signing up! Please verify your email address to activate your account.</p>
+    <a href="{{ verification_url }}"
+       style="display:inline-block; background:#4f46e5; color:white; padding:12px 24px;
+              border-radius:6px; text-decoration:none; margin-top:16px;">
+      Verify My Email
+    </a>
+    <p style="margin-top:24px; color:#888; font-size:12px;">
+      This link expires in 24 hours. If you didn't sign up, ignore this email.
+    </p>
+  </div>
+</body>
+</html>

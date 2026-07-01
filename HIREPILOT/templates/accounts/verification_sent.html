@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Email Sent — HirePilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-dark: #050816;
+      --primary: #3B82F6;
+      --purple: #8B5CF6;
+      --indigo: #4F46E5;
+      --text-white: #F8FAFC;
+      --text-muted: #94a3b8;
+      --glass-bg: rgba(20, 20, 30, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 25%, rgba(139, 92, 246, 0.15), transparent 40%), 
+        radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.15), transparent 40%);
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 480px;
+      padding: 3rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+    .brand-logo img {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 0 8px rgba(59,130,246,0.6));
+    }
+    .icon-wrapper {
+      width: 80px;
+      height: 80px;
+      background: rgba(79, 70, 229, 0.15);
+      border: 1px solid rgba(79, 70, 229, 0.3);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      color: var(--indigo);
+    }
+    .icon-wrapper svg {
+      width: 40px;
+      height: 40px;
+    }
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .email-highlight {
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+    .wrong-email-note {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      display: block;
+    }
+    .wrong-email-note a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .wrong-email-note a:hover {
+      text-decoration: underline;
+    }
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--indigo), var(--purple));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <a href="/" class="brand-logo">
+      <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="Logo">
+      HirePilot
+    </a>
+    <div class="icon-wrapper">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    </div>
+    <h2>Verify your email</h2>
+    <p>We've sent a verification link to <span class="email-highlight">{{ email }}</span>. Please check your inbox and click the link to activate your account. Check your spam folder if you don't see it.</p>
+    
+    <a href="/login/" class="btn">Back to Login</a>
+    
+    <span class="wrong-email-note">
+      Wrong email? <a href="/signup/">Sign up again</a>
+    </span>
+  </div>
+</body>
+</html>

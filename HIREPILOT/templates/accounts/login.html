@@ -1,0 +1,764 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login — HirePilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-dark: #050816;
+      --primary: #3B82F6;
+      --purple: #8B5CF6;
+      --cyan: #06B6D4;
+      --text-white: #F8FAFC;
+      --text-muted: #94a3b8;
+      --glass-bg: rgba(20, 20, 30, 0.4);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 25%, rgba(139, 92, 246, 0.15), transparent 40%), 
+        radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.15), transparent 40%);
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* ── Split Screen Layout ── */
+    .split-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .left-pane {
+      flex: 1;
+      padding: 3rem 4rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .right-pane {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* ── Left Pane Content ── */
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: -0.5px;
+      margin-bottom: 4rem;
+      text-decoration: none;
+    }
+    
+    .brand-logo img {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 0 8px rgba(59,130,246,0.6));
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, var(--cyan), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 480px;
+      margin-bottom: 3rem;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--purple);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .feature-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .feature-text p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    
+    .illustration-wrapper {
+      position: absolute;
+      bottom: -50px;
+      right: -20px;
+      width: 600px;
+      height: 500px;
+      z-index: 0;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .illustration-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+    }
+    
+    .trust-section {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 10;
+    }
+    
+    .avatars {
+      display: flex;
+    }
+    
+    .avatars img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-dark);
+      margin-left: -12px;
+    }
+    .avatars img:first-child { margin-left: 0; }
+    
+    .stars { color: #FBBF24; font-size: 1.1rem; margin-bottom: 4px; }
+    .trust-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+    /* ── Right Pane Content (Glass Card) ── */
+    .auth-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      padding: 3rem 3.5rem;
+      border-radius: 24px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Subtle neon border glow trick */
+    .auth-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 24px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(139,92,246,0.1), rgba(6,182,212,0.5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-header img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 10px rgba(59,130,246,0.6));
+    }
+    .auth-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .auth-header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Form Fields ── */
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper { position: relative; }
+
+    .input-wrapper svg.field-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: #64748b;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .password-toggle:hover { color: #cbd5e1; }
+    .password-toggle svg { width: 18px; height: 18px; }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.2);
+      color: var(--text-white);
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .form-group input::placeholder { color: #64748b; }
+
+    .form-group input:focus {
+      border-color: var(--primary);
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+    
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .checkbox-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+      cursor: pointer;
+    }
+    .checkbox-wrap input {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    
+    .forgot-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: text-shadow 0.2s;
+    }
+    .forgot-link:hover { text-shadow: 0 0 8px rgba(59,130,246,0.6); }
+
+    /* ── Submit Button ── */
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(59,130,246,0.4);
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139,92,246,0.5);
+    }
+
+    /* ── Divider & Socials ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .divider span { padding: 0 12px; }
+
+    .social-btns {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .btn-social {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: var(--text-white);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-social:hover { background: rgba(255,255,255,0.1); }
+    
+    .footer-text {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+    .footer-text a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    .footer-text a:hover { text-decoration: underline; }
+
+    /* ── Alerts ── */
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 1.5rem;
+      color: #fca5a5;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 968px) {
+      .split-container { flex-direction: column; }
+      .left-pane { padding: 2rem; flex: 0 1 auto; align-items: center; text-align: center; }
+      .hero-subtitle { margin: 0 auto 2rem; }
+      .feature-list { display: none; }
+      .illustration-wrapper { display: none; }
+      .trust-section { display: none; }
+      .right-pane { padding: 1rem; align-items: flex-start; }
+      .auth-card { padding: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .split-container { flex-direction: column; }
+      .left-pane {
+        display: none; /* Hide decorative pane completely on mobile */
+      }
+      .right-pane {
+        flex: 1;
+        width: 100%;
+        padding: 2rem 1.25rem;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .auth-card {
+        padding: 2rem 1.5rem;
+        max-width: 100%;
+        border-radius: 20px;
+      }
+      .auth-header h2 { font-size: 1.6rem; }
+      /* Prevent iOS auto-zoom on input focus */
+      .form-group input {
+        font-size: 16px !important;
+      }
+      button[type="submit"] { font-size: 1rem; padding: 14px; }
+    }
+
+    @media (max-width: 390px) {
+      .right-pane { padding: 1.5rem 1rem; }
+      .auth-card { padding: 1.5rem 1.25rem; border-radius: 16px; }
+      .auth-header img { width: 40px; height: 40px; }
+      .auth-header h2 { font-size: 1.4rem; }
+      .social-btns { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-container">
+    
+    <!-- Left Marketing Pane -->
+    <div class="left-pane">
+      <a href="{% url 'home' %}" class="brand-logo">
+        <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="Logo">
+        HirePilot
+      </a>
+      
+      <div class="hero-badge">✨ AI-Powered Platform</div>
+      <h1 class="hero-title">
+        Crack Interviews <br>
+        <span class="gradient-text">Land Your Dream Job</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Practice coding, solve real-world problems, build your ATS-friendly resume and get hired faster with AI guidance.
+      </p>
+      
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">💻</div>
+          <div class="feature-text">
+            <h4>Smart Coding Practice</h4>
+            <p>Curated problems with AI hints and solutions.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📄</div>
+          <div class="feature-text">
+            <h4>AI Resume Builder</h4>
+            <p>Create resumes that get you noticed by recruiters.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📈</div>
+          <div class="feature-text">
+            <h4>Track & Improve</h4>
+            <p>Analyze your performance and improve every day.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Generated 3D Laptop Illustration -->
+      <div class="illustration-wrapper">
+        <img src="{% static 'assets/images/coding_laptop.png' %}" alt="3D Laptop Coding">
+      </div>
+      
+      <div class="trust-section">
+        <div class="avatars">
+          <img src="https://i.pravatar.cc/100?img=11" alt="user">
+          <img src="https://i.pravatar.cc/100?img=32" alt="user">
+          <img src="https://i.pravatar.cc/100?img=44" alt="user">
+          <img src="https://i.pravatar.cc/100?img=68" alt="user">
+        </div>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="trust-text">Trusted by 50K+ developers</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Auth Pane -->
+    <div class="right-pane">
+      <div class="auth-card">
+        
+        <div class="auth-header">
+          <img src="{% static 'assets/images/hirepilot_logo.png' %}" alt="Logo">
+          <h2>HirePilot</h2>
+          <p>Welcome back! Log in to your account</p>
+        </div>
+        
+        <!-- Errors -->
+        {% if form.errors %}
+        <div class="alert-error">
+          <span>⚠</span>
+          <div>
+            {% for field in form %}
+              {% for error in field.errors %}{{ error }}<br>{% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if messages %}
+        <div class="alert-error" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 12px 16px; border-radius: 12px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: left;">
+          <span>⚠</span>
+          <div>
+            {% for message in messages %}
+              {{ message }}<br>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}" />
+          
+          <div class="form-group">
+            <label for="id_username">Email or Username</label>
+            <div class="input-wrapper">
+              <svg class="field-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" autocomplete="username" placeholder="Enter your email or username" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="id_password">Password</label>
+            <div class="input-wrapper">
+              <svg class="field-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <input type="password" name="password" id="id_password" autocomplete="current-password" placeholder="Enter your password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('id_password', this)" aria-label="Show password">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-options">
+            <label class="checkbox-wrap">
+              <input type="checkbox" name="remember" id="remember">
+              Remember me
+            </label>
+            <a href="{% url 'password_reset' %}" class="forgot-link">Forgot password?</a>
+          </div>
+          
+          <button type="submit">Log In →</button>
+        </form>
+        
+        <div class="divider"><span>or continue with</span></div>
+        
+        <div class="social-btns">
+          <button type="button" class="btn-social" id="btn-google-login" onclick="loginWithGoogle()">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M24 12.27c0-.84-.07-1.65-.2-2.43H12v4.61h6.72a5.75 5.75 0 01-2.49 3.77v3.13h4.03c2.36-2.18 3.74-5.38 3.74-9.08z"/><path fill="#34A853" d="M12 24c3.38 0 6.22-1.12 8.29-3.03l-4.03-3.13c-1.12.75-2.55 1.2-4.26 1.2-3.28 0-6.06-2.22-7.05-5.2H.82v3.23C2.88 21.1 7.12 24 12 24z"/><path fill="#FBBC05" d="M4.95 13.84a7.17 7.17 0 010-3.68V6.93H.82a12.01 12.01 0 000 10.14l4.13-3.23z"/><path fill="#4285F4" d="M12 4.96c1.84 0 3.49.63 4.8 1.88l3.6-3.6C18.22 1.12 15.38 0 12 0 7.12 0 2.88 2.9.82 6.93l4.13 3.23c.99-2.98 3.77-5.2 7.05-5.2z"/></svg>
+            Google
+          </button>
+
+        </div>
+        
+        <div class="footer-text">
+          Don't have an account? <a href="{% url 'signup' %}">Sign up free</a>
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+
+  <script>
+    // ── Helpers ─────────────────────────────────────────────────────────────
+    function showAuthError(message) {
+      let errBox = document.getElementById('auth-error-box');
+      if (!errBox) {
+        errBox = document.createElement('div');
+        errBox.id = 'auth-error-box';
+        errBox.style.cssText = 'background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:10px;padding:12px 16px;margin-bottom:1rem;color:#fca5a5;font-size:0.9rem;display:flex;align-items:flex-start;gap:8px;';
+        const card = document.querySelector('.auth-card');
+        if (card) card.insertAdjacentElement('afterbegin', errBox);
+      }
+      errBox.innerHTML = `⚠️ ${message}`;
+      errBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetGoogleBtn() {
+      const btn = document.getElementById('btn-google-login');
+      if (!btn) return;
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M24 12.27c0-.84-.07-1.65-.2-2.43H12v4.61h6.72a5.75 5.75 0 01-2.49 3.77v3.13h4.03c2.36-2.18 3.74-5.38 3.74-9.08z"/><path fill="#34A853" d="M12 24c3.38 0 6.22-1.12 8.29-3.03l-4.03-3.13c-1.12.75-2.55 1.2-4.26 1.2-3.28 0-6.06-2.22-7.05-5.2H.82v3.23C2.88 21.1 7.12 24 12 24z"/><path fill="#FBBC05" d="M4.95 13.84a7.17 7.17 0 010-3.68V6.93H.82a12.01 12.01 0 000 10.14l4.13-3.23z"/><path fill="#4285F4" d="M12 4.96c1.84 0 3.49.63 4.8 1.88l3.6-3.6C18.22 1.12 15.38 0 12 0 7.12 0 2.88 2.9.82 6.93l4.13 3.23c.99-2.98 3.77-5.2 7.05-5.2z"/></svg> Google`;
+    }
+
+    // ── Supabase client ──────────────────────────────────────────────────────
+    const SUPABASE_URL  = '{{ SUPABASE_URL|escapejs }}';
+    const SUPABASE_ANON = '{{ SUPABASE_KEY|escapejs }}';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ── On page load: handle OAuth callback ─────────────────────────────────
+    (async () => {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      const isImplicit = hash.includes('access_token=');
+      const isPKCE = search.includes('code=');
+      let isOAuthCallback = isImplicit || isPKCE;
+
+      console.log('[HirePilot Debug] Callback check: isImplicit=', isImplicit, 'isPKCE=', isPKCE);
+
+      if (isOAuthCallback) {
+        const btn = document.getElementById('btn-google-login');
+        if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+        
+        // Use onAuthStateChange to reliably capture the session after SDK auto-exchange
+        const { data: { subscription } } = _supabase.auth.onAuthStateChange(async (event, session) => {
+          console.log('[HirePilot Debug] onAuthStateChange:', event, !!session);
+          
+          if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+             if (isOAuthCallback) {
+                 isOAuthCallback = false; // prevent multiple triggers
+                 console.log('[HirePilot Debug] Session obtained. Exchanging with Django...');
+                 await exchangeTokenWithDjango(session);
+                 
+                 // Clean URL
+                 history.replaceState(null, '', window.location.pathname);
+             }
+          } else if (event === 'INITIAL_SESSION' && !session) {
+             // If initial session check finishes but no session is found, it failed
+             console.warn('[HirePilot Debug] INITIAL_SESSION fired but no session found.');
+             showAuthError('Session expired or already used. Please click “Continue with Google” again.');
+             resetGoogleBtn();
+          }
+        });
+
+      } else {
+        // Normal page visit — clear any stale Supabase session
+        await _supabase.auth.signOut().catch(() => {});
+      }
+    })();
+
+    // ── Trigger Supabase Google OAuth ────────────────────────────────────────
+    async function loginWithGoogle() {
+      console.log('[HirePilot Debug] Calling signInWithOAuth()...');
+      const btn = document.getElementById('btn-google-login');
+      if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
+      const existingErr = document.getElementById('auth-error-box');
+      if (existingErr) existingErr.remove();
+      
+      const { error } = await _supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/login/',
+          queryParams: { prompt: 'select_account' },
+        },
+      });
+      if (error) {
+        console.error('[HirePilot Debug] OAuth initiation error:', error);
+        showAuthError('Google sign-in error: ' + error.message);
+        resetGoogleBtn();
+      }
+    }
+
+    // ── POST token to Django → create Django session → redirect ─────────────
+    async function exchangeTokenWithDjango(session) {
+      try {
+        const res = await fetch('/auth/supabase/callback/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            email:        session.user?.email                     || '',
+            full_name:    session.user?.user_metadata?.full_name || '',
+          }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          window.location.href = data.redirect || '/dashboard/';
+        } else {
+          console.error('[HirePilot] Django callback error:', data.error);
+          showAuthError('Sign-in failed: ' + (data.error || 'Unknown error'));
+          resetGoogleBtn();
+        }
+      } catch (err) {
+        console.error('[HirePilot] Network error during token exchange:', err);
+        showAuthError('Network error. Please check your connection and try again.');
+        resetGoogleBtn();
+      }
+    }
+
+    // ── Password toggle ───────────────────────────────────────────────────
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      const icon = button.querySelector('svg');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
+      } else {
+        input.type = 'password';
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+      }
+    }
+  </script>
+</body>
+</html>
