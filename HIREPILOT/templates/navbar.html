@@ -150,38 +150,40 @@
     .mobile-overlay.active { display: block; }
 
     /* ── Mobile Responsive ── */
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
       .hamburger { display: flex; }
+      nav { flex-wrap: wrap; }
       
       .nav-links {
-        display: flex;
+        display: none;
         flex-direction: column;
-        position: fixed;
+        width: 100%;
+        position: absolute;
         top: 70px;
-        right: 0;
-        width: min(320px, 85vw);
-        height: calc(100vh - 70px);
-        background: #0a0a0f;
-        padding: 20px 0;
+        left: 0;
+        background: #000000;
+        padding: 10px 0;
         gap: 0;
-        overflow-y: auto;
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 999;
-        border-left: 1px solid rgba(255,255,255,0.08);
-        box-shadow: -8px 0 32px rgba(0,0,0,0.4);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3);
       }
-      .nav-links.mobile-open { transform: translateX(0); }
+      .nav-links.open { display: flex; }
+
+      .nav-item {
+        width: 100%;
+      }
 
       .nav-item > a {
-        padding: 16px 24px;
+        padding: 14px 20px;
         font-size: 1rem;
         border-bottom: 1px solid rgba(255,255,255,0.05);
         border-radius: 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        min-height: 54px;
+        min-height: 48px;
+        width: 100%;
       }
       .nav-item > a:hover,
       .nav-item.active > a {
@@ -200,25 +202,27 @@
         overflow: hidden;
         border-left: 3px solid #1565c0;
         margin-left: 0;
+        width: 100%;
       }
-      .dropdown.mobile-open { display: flex; }
+      .dropdown.open { display: flex; }
       .dropdown a {
-        padding: 14px 24px 14px 32px;
+        padding: 12px 20px 12px 32px;
         font-size: 0.95rem;
         border-bottom: 1px solid rgba(255,255,255,0.04);
-        min-height: 48px;
+        min-height: 44px;
         display: flex;
         align-items: center;
+        width: 100%;
       }
       /* Stop hover-based dropdown on mobile */
       .nav-item:hover .dropdown { display: none; }
-      .nav-item .dropdown.mobile-open { display: flex; }
+      .nav-item .dropdown.open { display: flex; }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 576px) {
       .logo span { font-size: 20px; }
       .logo img { height: 40px; }
-      .main-content { padding: 12px; }
+      .main-content { padding: 16px; }
     }
   </style>
 </head>
@@ -311,15 +315,15 @@
     const navLinks     = document.getElementById('navLinks');
     const mobileOverlay = document.getElementById('mobileOverlay');
 
-    function closeMobileNav() {
+     function closeMobileNav() {
       hamburgerBtn.classList.remove('open');
-      navLinks.classList.remove('mobile-open');
+      navLinks.classList.remove('open');
       mobileOverlay.classList.remove('active');
       hamburgerBtn.setAttribute('aria-expanded', 'false');
     }
 
     hamburgerBtn.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('mobile-open');
+      const isOpen = navLinks.classList.toggle('open');
       hamburgerBtn.classList.toggle('open', isOpen);
       mobileOverlay.classList.toggle('active', isOpen);
       hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
@@ -331,17 +335,17 @@
     document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
       toggle.addEventListener('click', function(e) {
         // Only intercept on mobile
-        if (window.innerWidth > 900) return;
+        if (window.innerWidth > 768) return;
         e.preventDefault();
         const parentItem = this.closest('.nav-item');
         const dropdown = parentItem.querySelector('.dropdown');
         if (!dropdown) return;
-        const isOpen = dropdown.classList.toggle('mobile-open');
+        const isOpen = dropdown.classList.toggle('open');
         this.querySelector('span').textContent = isOpen ? '▴' : '▾';
         // Close others
         document.querySelectorAll('.nav-item .dropdown').forEach(d => {
           if (d !== dropdown) {
-            d.classList.remove('mobile-open');
+            d.classList.remove('open');
             const otherToggle = d.closest('.nav-item').querySelector('.dropdown-toggle span');
             if (otherToggle) otherToggle.textContent = '▾';
           }
@@ -356,7 +360,7 @@
 
     // Close nav on resize to desktop
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 900) closeMobileNav();
+      if (window.innerWidth > 768) closeMobileNav();
     });
 
     // ── AI Chatbot ──────────────────────────────────────────────────────────

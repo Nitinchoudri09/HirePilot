@@ -384,8 +384,49 @@
 
         /* Mobile fallback */
         @media (max-width: 768px) {
-            .panel-problem { display: none; }
-            .problem-title { display: none; }
+            body {
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .topbar {
+                padding: 10px !important;
+                height: auto !important;
+                flex-wrap: wrap !important;
+            }
+            .problem-title {
+                display: none !important;
+            }
+            .workspace {
+                flex-direction: column !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            .panel-problem {
+                width: 100% !important;
+                height: auto !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--border) !important;
+                flex-shrink: unset !important;
+                overflow: visible !important;
+            }
+            .panel-content {
+                overflow-y: visible !important;
+            }
+            .panel-editor {
+                width: 100% !important;
+                height: auto !important;
+                flex: none !important;
+                overflow: visible !important;
+            }
+            #editor {
+                height: 350px !important;
+                flex-grow: unset !important;
+                flex-shrink: unset !important;
+            }
+            .io-panel {
+                height: 300px !important;
+                min-height: unset !important;
+            }
         }
     </style>
 </head>

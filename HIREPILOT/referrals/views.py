@@ -58,15 +58,15 @@ def employee_signup(request):
             profile.department = form.cleaned_data['department']
             profile.work_email = work_email
             profile.domain_tags = form.cleaned_data['domain_tags_input']
-            profile.is_verified = False
+            profile.is_verified = True
             profile.save()
 
-            # Generate OTP and send
-            otp = profile.generate_otp()
-            send_otp_email(profile)
+            # Clear invite session data
+            request.session.pop('invite_company', None)
+            request.session.pop('invite_domain', None)
 
-            messages.success(request, f'A 6-digit code has been sent to {work_email}. Please check your inbox.')
-            return redirect('verify_work_email')
+            messages.success(request, 'Your employee profile has been created successfully!')
+            return redirect('employee_dashboard')
     else:
         form = EmployeeSignupForm(initial=initial)
 
@@ -124,8 +124,8 @@ def employee_dashboard(request):
         return redirect('employee_signup')
 
     if not profile.is_verified:
-        messages.warning(request, 'Please verify your work email first.')
-        return redirect('verify_work_email')
+        profile.is_verified = True
+        profile.save(update_fields=['is_verified'])
 
     requests_qs = ReferralRequest.objects.filter(employee=profile).select_related('seeker').order_by('-created_at')
     pending = requests_qs.filter(status='pending')

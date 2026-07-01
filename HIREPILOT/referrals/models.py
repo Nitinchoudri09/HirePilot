@@ -12,7 +12,7 @@ class EmployeeProfile(models.Model):
     department = models.CharField(max_length=255, blank=True)
     work_email = models.EmailField(unique=True)
     domain_tags = models.JSONField(default=list, help_text="List of skill/domain keywords, e.g. ['Python', 'Backend', 'Django']")
-    is_verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=True)
     otp_token = models.CharField(max_length=6, blank=True)
     otp_expires_at = models.DateTimeField(null=True, blank=True)
     invited_by = models.ForeignKey(

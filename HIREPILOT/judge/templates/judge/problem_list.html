@@ -93,6 +93,29 @@
             color: var(--text-muted);
             margin-top: 50px;
         }
+
+        @media (max-width: 768px) {
+            .problems-container {
+                padding: 16px !important;
+            }
+            .problems-container h1 {
+                font-size: 28px !important;
+                margin-bottom: 20px !important;
+            }
+            .problems-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            .problem-card {
+                padding: 16px !important;
+            }
+            a.btn-solve {
+                min-height: 44px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
     </style>
 
     <div class="problems-container">

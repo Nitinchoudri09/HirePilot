@@ -87,9 +87,26 @@
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 768px) {
+    .quiz-container {
+      padding: 16px !important;
+    }
+    .quiz-container h2 {
+      font-size: 28px !important;
+      margin-bottom: 20px !important;
+    }
     .quiz-cards {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .quiz-card {
+      padding: 16px !important;
+    }
+    .quiz-card a {
+      min-height: 44px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
   }
 </style>
